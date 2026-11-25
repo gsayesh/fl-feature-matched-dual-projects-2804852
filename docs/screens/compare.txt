@@ -1,0 +1,20 @@
+Screens captured from both twins with Chrome at 1440 x 1000 (same clicks, same form input).
+
+state                      screen                             status    html sha256    pixels diff  result
+01-overview                Overview                              200   35dea1d9e893              0  identical
+02-overview-empty-month    Overview, month without expenses      200   694b43e8d322              0  identical
+03-expenses                Expense list                          200   664dee21c1b3              0  identical
+04-expenses-filtered       List filtered by month and category    200   5454a9de3762              0  identical
+05-expenses-no-match       Search with no results                200   7c04806f2b4f              0  identical
+06-add-form                Add expense form                      200   297b9731b793              0  identical
+07-add-validation          Add expense, validation errors        422   5efb56c072e6              0  identical
+08-added-notice            List after adding an expense          200   aff44310daa6              0  identical
+09-edit-form               Edit expense                          200   01d62692463b              0  identical
+10-delete-confirm          Delete confirmation                   200   68e357d1d76f              0  identical
+11-deleted-notice          List after deleting                   200   4cea9023c3ee              0  identical
+12-report                  Monthly report                        200   a65a70375749              0  identical
+13-data-tools              Data tools                            200   5067cf768e7a              0  identical
+14-data-confirm-error      Data tools, confirmation missing      422   318d3075069d              0  identical
+15-not-found               404 page                              404   51ab60b50e6c              0  identical
+
+Result: 15 of 15 screens identical in HTML bytes and in pixels.

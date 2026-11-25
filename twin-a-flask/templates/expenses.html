@@ -1,0 +1,93 @@
+{% include "_top.html" %}
+{# FR-06: expense list #}
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Expenses</p>
+          <h1>All expenses</h1>
+          <p class="lede">Filters live in the address bar, so every view can be bookmarked or shared.</p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn-ghost" href="{{ export_href }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7 8 10.2 11.2 7M3 13h10"/></svg>Export CSV</a>
+          <a class="btn btn-primary" href="{{ add_href }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>Add expense</a>
+        </div>
+      </header>
+      {# FR-07, FR-08: filter, search and sort (GET form, state kept in the URL) #}
+      <form class="card filters" method="get" action="/expenses" role="search">
+        <div class="field">
+          <label for="f-month">Month</label>
+          <select class="select" id="f-month" name="month">
+            {% for o in month_options %}
+            <option value="{{ o.value }}"{{ o.sel }}>{{ o.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-category">Category</label>
+          <select class="select" id="f-category" name="category">
+            {% for o in category_options %}
+            <option value="{{ o.value }}"{{ o.sel }}>{{ o.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-q">Search</label>
+          <input class="input" id="f-q" name="q" type="search" value="{{ f.q }}" placeholder="Description or notes">
+        </div>
+        <div class="field">
+          <label for="f-sort">Sort</label>
+          <select class="select" id="f-sort" name="sort">
+            {% for o in sort_options %}
+            <option value="{{ o.value }}"{{ o.sel }}>{{ o.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Apply</button>
+          <a class="btn btn-ghost" href="/expenses">Reset</a>
+        </div>
+      </form>
+      {% if empty == "none" %}
+      <section class="card empty">
+        <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><rect x="8" y="6" width="40" height="44" rx="9" fill="#e2f0ea"/><path d="M18 20h20M18 28h14M18 36h20" stroke="#0d6b53" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <h2>No expenses yet.</h2>
+        <p>Add your first expense, or restore the sample data from the Data screen.</p>
+        <a class="btn btn-primary" href="{{ add_href }}">Add expense</a>
+      </section>
+      {% elif empty == "nomatch" %}
+      <section class="card empty">
+        <svg viewBox="0 0 56 56" fill="none" aria-hidden="true"><circle cx="25" cy="25" r="15" fill="#e2f0ea"/><circle cx="25" cy="25" r="9" stroke="#0d6b53" stroke-width="2.6"/><path d="m32 32 10 10" stroke="#0d6b53" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <h2>No expenses match these filters.</h2>
+        <p>Try another month or category, or clear the search.</p>
+        <a class="btn btn-ghost" href="/expenses">Reset filters</a>
+      </section>
+      {% else %}
+      <div class="list-meta">
+        <p><strong>{{ count_text }}</strong> · {{ total_text }}</p>
+        <p class="list-sort">Sorted by {{ sort_label }}</p>
+      </div>
+      <section class="card table-card">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="col-date">Date</th>
+              <th scope="col">Description</th>
+              <th scope="col" class="col-cat">Category</th>
+              <th scope="col" class="col-amt">Amount (OMR)</th>
+              <th scope="col" class="col-act"><span class="visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr id="expense-{{ r.id }}">
+              <td class="col-date"><time datetime="{{ r.iso }}">{{ r.date }}</time></td>
+              <td class="desc"><strong dir="auto">{{ r.description }}</strong>{% if r.notes %}<span dir="auto">{{ r.notes }}</span>{% endif %}</td>
+              <td class="col-cat"><span class="chip cat-{{ r.key }}"><i class="dot"></i>{{ r.label }}</span></td>
+              <td class="col-amt">{{ r.amount }}</td>
+              <td class="col-act"><a class="row-act" href="{{ r.edit_href }}">Edit<span class="visually-hidden"> entry #{{ r.id }}</span></a><a class="row-act is-danger" href="{{ r.delete_href }}">Delete<span class="visually-hidden"> entry #{{ r.id }}</span></a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+      {% endif %}
+{% include "_bottom.html" %}

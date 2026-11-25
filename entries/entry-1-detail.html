@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Expense Ledger: delivery overview</title><style>
+@font-face { font-family: "Geist"; src: url("../spec/assets/fonts/geist-latin.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("../spec/assets/fonts/geist-mono-latin.woff2") format("woff2"); font-weight: 100 900; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1600px; height: 2000px; overflow: hidden; }
+body { background: #f5f4f0; color: #16181d; font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.board { position: relative; width: 1600px; height: 2000px; padding: 70px 84px; }
+.kicker { font: 600 16px/1 "Geist Mono", monospace; letter-spacing: 0.15em; text-transform: uppercase; color: #0d6b53; }
+h1 { margin-top: 18px; font-size: 66px; line-height: 1.02; font-weight: 650; letter-spacing: -0.04em; }
+h1 span { color: #8a8f97; }
+.sub { margin-top: 18px; max-width: 1180px; font-size: 21px; line-height: 1.5; color: #4a4f57; }
+.chip { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; font: 700 13px/1 "Geist Mono", monospace; color: #0e1013; flex: none; }
+.chip.a { background: #f2c14e; } .chip.b { background: #8bd17c; }
+.brief { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 36px; }
+.ask { position: relative; padding: 24px 24px 22px; background: #fff; border: 1px solid #e3e0d7; border-radius: 18px; }
+.ask .q { padding-right: 38px; min-height: 36px; font: 600 12.5px/1.4 "Geist Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; color: #8a8f97; }
+.ask b { display: block; margin-top: 14px; font: 600 38px/1 "Geist Mono", monospace; letter-spacing: -0.03em; }
+.ask p { margin-top: 10px; font-size: 16px; line-height: 1.45; color: #4a4f57; }
+.ask .tick { position: absolute; top: 20px; right: 20px; width: 28px; height: 28px; border-radius: 50%; background: #0d6b53; display: grid; place-items: center; }
+.ask .tick svg { width: 15px; height: 15px; }
+.mosaic { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 40px; margin-top: 38px; }
+.cap { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 650; letter-spacing: -0.01em; }
+.cap .n { font: 700 13px "Geist Mono", monospace; color: #0d6b53; }
+.cap .eq { margin-left: auto; font: 600 12.5px "Geist Mono", monospace; color: #0b5a45; background: #e2f0ea; padding: 6px 10px; border-radius: 999px; }
+.duo { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 12px; }
+.duo::after { content: "="; position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%); width: 26px; height: 26px; border-radius: 50%;
+  background: #0d6b53; color: #fff; display: grid; place-items: center; font: 700 15px/1 "Geist Mono", monospace; }
+.mini { border-radius: 9px; overflow: hidden; border: 1px solid #d9d5cb; background: #fff; box-shadow: 0 10px 24px -16px rgba(22,24,29,0.4); }
+.mini-bar { display: flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; background: #ebe9e3; border-bottom: 1px solid #d9d5cb; font-size: 11px; color: #4a4f57; white-space: nowrap; }
+.mini-bar .chip { width: 15px; height: 15px; font-size: 9px; border-radius: 4px; }
+.mini-bar code { margin-left: auto; font: 500 10px "Geist Mono", monospace; color: #8a8f97; }
+.mini-view { position: relative; width: 100%; height: 216px; overflow: hidden; background: #f3f2ee; }
+.mini-view iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 1000px; border: 0; transform: scale(0.23611); transform-origin: 0 0; }
+.foot { display: grid; grid-template-columns: 1.5fr 1fr; gap: 26px; margin-top: 36px; }
+.panel { padding: 26px 30px; background: #fff; border: 1px solid #e3e0d7; border-radius: 18px; }
+.panel h3 { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
+.frs { columns: 2; column-gap: 30px; margin-top: 14px; }
+.frs div { display: flex; gap: 10px; padding: 5px 0; font-size: 15px; break-inside: avoid; }
+.frs span { font: 700 12.5px/1.6 "Geist Mono", monospace; color: #0d6b53; }
+.dark { background: #0f1215; border-color: #0f1215; color: #e6e8ea; }
+.stackline { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 16px; color: #c9cdd3; }
+.type { display: flex; align-items: baseline; gap: 18px; margin-top: 18px; }
+.type b { font-size: 40px; font-weight: 650; letter-spacing: -0.03em; color: #fff; }
+.type code { font: 500 30px "Geist Mono", monospace; color: #5fd3a8; }
+.type small { font-size: 14px; color: #8d939c; }
+.swatches { display: flex; gap: 8px; margin-top: 18px; }
+.swatches i { flex: 1; height: 38px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); }
+.why { margin-top: 16px; font-size: 15.5px; line-height: 1.55; color: #aeb4bc; }
+</style></head>
+<body><section class="board">
+  <p class="kicker">Expense Ledger · twin builds · delivery overview</p>
+  <h1>Everything the brief asks for,<br><span>built twice and proved identical.</span></h1>
+  <p class="sub">A household expense tracker in Omani rial, written once in Python + Flask and once in Node.js + Express. The two builds share one specification, the same test scenarios and one stylesheet, but no application code.</p>
+  <div class="brief"><div class="ask"><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.4 2.9 2.9 6.1-6.6"/></svg></span><p class="q">Two runnable projects</p><b>2 builds</b><p>Python + Flask on :5001 and Node.js + Express on :5002, each self-contained, one command to run.</p></div><div class="ask"><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.4 2.9 2.9 6.1-6.6"/></svg></span><p class="q">Same screens, workflows, outputs</p><b>218/218</b><p>responses byte-identical: every page, CSV and JSON. 15/15 screens pixel-identical.</p></div><div class="ask"><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.4 2.9 2.9 6.1-6.6"/></svg></span><p class="q">Clean code, README, tests</p><b>82/82</b><p>tests passing, 41 per build under the same names; commented code; a README for each build and one for the delivery.</p></div><div class="ask"><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m3.5 8.4 2.9 2.9 6.1-6.6"/></svg></span><p class="q">Requirements write-up</p><b>18 FRs</b><p>short and plain, every message word for word, traced to the code and tests of both builds.</p></div></div>
+  <div class="mosaic"><div><div class="cap"><span class="n">01</span>Overview<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001/</code></div><div class="mini-view"><iframe src="../demo/twin-a/01-overview.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002/</code></div><div class="mini-view"><iframe src="../demo/twin-b/01-overview.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div><div><div class="cap"><span class="n">03</span>Expense list<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001/expenses</code></div><div class="mini-view"><iframe src="../demo/twin-a/03-expenses.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002/expenses</code></div><div class="mini-view"><iframe src="../demo/twin-b/03-expenses.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div><div><div class="cap"><span class="n">07</span>Add expense, validation errors<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001 POST /expenses</code></div><div class="mini-view"><iframe src="../demo/twin-a/07-add-validation.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002 POST /expenses</code></div><div class="mini-view"><iframe src="../demo/twin-b/07-add-validation.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div><div><div class="cap"><span class="n">10</span>Delete confirmation<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001/expenses/36/delete</code></div><div class="mini-view"><iframe src="../demo/twin-a/10-delete-confirm.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002/expenses/36/delete</code></div><div class="mini-view"><iframe src="../demo/twin-b/10-delete-confirm.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div><div><div class="cap"><span class="n">12</span>Monthly report<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001/reports</code></div><div class="mini-view"><iframe src="../demo/twin-a/12-report.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002/reports</code></div><div class="mini-view"><iframe src="../demo/twin-b/12-report.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div><div><div class="cap"><span class="n">14</span>Data tools, confirmation missing<span class="eq">0 px different</span></div><div class="duo"><div class="mini"><div class="mini-bar"><span class="chip a">A</span>Twin A · Flask<code>:5001 POST /data/clear</code></div><div class="mini-view"><iframe src="../demo/twin-a/14-data-confirm-error.html" scrolling="no" title="Twin A · Flask"></iframe></div></div><div class="mini"><div class="mini-bar"><span class="chip b">B</span>Twin B · Express<code>:5002 POST /data/clear</code></div><div class="mini-view"><iframe src="../demo/twin-b/14-data-confirm-error.html" scrolling="no" title="Twin B · Express"></iframe></div></div></div></div></div>
+  <div class="foot">
+    <div class="panel"><h3>The requirements both builds follow</h3><div class="frs"><div><span>FR-01</span>Shared layout and navigation</div><div><span>FR-02</span>Monthly headline figures</div><div><span>FR-03</span>Spending by category</div><div><span>FR-04</span>Spending-through-the-month chart</div><div><span>FR-05</span>Latest expenses</div><div><span>FR-06</span>Expense list</div><div><span>FR-07</span>Filter and search</div><div><span>FR-08</span>Sorting</div><div><span>FR-09</span>Add an expense</div><div><span>FR-10</span>Validation with exact messages</div><div><span>FR-11</span>Edit an expense</div><div><span>FR-12</span>Delete with confirmation</div><div><span>FR-13</span>Monthly report</div><div><span>FR-14</span>CSV export</div><div><span>FR-15</span>Read-only JSON API</div><div><span>FR-16</span>Data tools</div><div><span>FR-17</span>Storage and money rules</div><div><span>FR-18</span>Errors, status codes and redirects</div></div></div>
+    <div class="panel dark"><h3>Built with</h3>
+      <div class="stackline"><span class="chip a">A</span>Python 3 · Flask 3 · Jinja2 · pytest</div>
+      <div class="stackline"><span class="chip b">B</span>Node.js 18+ · Express 5 · EJS · node:test</div>
+      <div class="type"><b>Geist</b><code>Geist Mono 0.123</code></div>
+      <div class="swatches"><i style="background:#0e1013"></i><i style="background:#16181d"></i><i style="background:#0d6b53"></i><i style="background:#5fd3a8"></i><i style="background:#f3f2ee"></i><i style="background:#f2c14e"></i><i style="background:#8bd17c"></i></div>
+      <p class="why">Ink, ledger green and mint on warm paper. Every figure is set in Geist Mono, so digits line up and never blur together.</p>
+    </div>
+  </div>
+</section></body></html>

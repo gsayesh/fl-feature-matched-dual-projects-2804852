@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · Expense Ledger</title>
+<link rel="icon" href="../static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../static/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="01-overview.html">
+      <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0d6b53"/><path d="M10 12.5h16M10 18h10M10 23.5h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="25" cy="18" r="1.9" fill="#5fd3a8"/></svg>
+      <span class="brand-text"><strong>Expense Ledger</strong><small>Household spending</small></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <p class="nav-label">Menu</p>
+      <a class="nav-link is-active" href="01-overview.html" aria-current="page"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.6"/><rect x="11" y="3" width="6" height="6" rx="1.6"/><rect x="3" y="11" width="6" height="6" rx="1.6"/><rect x="11" y="11" width="6" height="6" rx="1.6"/></svg>Overview</a>
+      <a class="nav-link" href="03-expenses.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M7.5 5.5h9M7.5 10h9M7.5 14.5h9"/><circle cx="4" cy="5.5" r=".9" fill="currentColor"/><circle cx="4" cy="10" r=".9" fill="currentColor"/><circle cx="4" cy="14.5" r=".9" fill="currentColor"/></svg>Expenses</a>
+      <a class="nav-link" href="06-add-form.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6.8v6.4M6.8 10h6.4"/></svg>Add expense</a>
+      <a class="nav-link" href="12-report.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 16.5h13M6 13.5V9M10 13.5V4.5M14 13.5V7.5"/></svg>Reports</a>
+      <a class="nav-link" href="13-data-tools.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="10" cy="5" rx="6" ry="2.3"/><path d="M4 5v10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3V5M4 10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3"/></svg>Data</a>
+    </nav>
+    <div class="side-foot">
+      <strong>Omani rial · OMR</strong>
+      1 OMR = 1,000 baisa
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1>November 2026</h1>
+        </div>
+        <div class="head-actions">
+          <nav class="month-switch" aria-label="Month">
+            <a href="#" aria-label="Previous month: October 2026"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></a>
+            <span>November 2026</span>
+            <a href="#" aria-label="Next month: December 2026"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></a>
+          </nav>
+          <a class="btn btn-primary" href="06-add-form.html"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>Add expense</a>
+        </div>
+      </header>
+      <section class="kpis" aria-label="Headline figures">
+        <div class="card kpi kpi-total">
+          <p class="kpi-label">Total spent</p>
+          <p class="kpi-value"><small>OMR</small>496.850</p>
+          <p class="kpi-sub"><span class="delta is-down">↓ 6.5% vs October</span></p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Expenses</p>
+          <p class="kpi-value">13</p>
+          <p class="kpi-sub">across 8 categories</p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Daily average</p>
+          <p class="kpi-value"><small>OMR</small>19.874</p>
+          <p class="kpi-sub">per day over 25 days so far</p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Largest expense</p>
+          <p class="kpi-value"><small>OMR</small>280.000</p>
+          <p class="kpi-sub">Monthly rent · 1 Nov</p>
+        </div>
+      </section>
+      <div class="grid-2">
+        <section class="card chart-card">
+          <div class="card-head">
+            <h2>Spending through the month</h2>
+            <div class="legend"><span><i></i>November</span><span><i class="is-prev"></i>October</span></div>
+          </div>
+          <div class="chart">
+            <div class="y-axis" aria-hidden="true">
+              <span class="y-label" style="top: 66.7%">200</span>
+              <span class="y-label" style="top: 33.3%">400</span>
+              <span class="y-label" style="top: 0.0%">600</span>
+            </div>
+            <svg viewBox="0 0 3100 1000" preserveAspectRatio="none" role="img" aria-label="Running total of spending in November 2026 compared with October 2026">
+              <defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d6b53" stop-opacity="0.16"/><stop offset="1" stop-color="#0d6b53" stop-opacity="0"/></linearGradient></defs>
+              <line class="grid-line" x1="0" y1="667" x2="3100" y2="667"/>
+              <line class="grid-line" x1="0" y1="333" x2="3100" y2="333"/>
+              <line class="grid-line" x1="0" y1="0" x2="3100" y2="0"/>
+              <line class="base-line" x1="0" y1="1000" x2="3100" y2="1000"/>
+              <path class="prev" d="M0 1000 L0 1000 L0 533 L200 533 L200 466 L400 466 L400 447 L500 447 L500 420 L900 420 L900 386 L1000 386 L1000 328 L1300 328 L1300 275 L1400 275 L1400 233 L1700 233 L1700 153 L2000 153 L2000 138 L2400 138 L2400 114 L3100 114"/>
+              <path class="area" d="M0 1000 L0 1000 L0 533 L103 533 L103 459 L310 459 L310 438 L517 438 L517 415 L723 415 L723 398 L930 398 L930 357 L1137 357 L1137 326 L1343 326 L1343 312 L1550 312 L1550 304 L1757 304 L1757 284 L1963 284 L1963 199 L2170 199 L2170 182 L2377 182 L2377 172 L2583 172 L2583 1000 Z"/>
+              <path class="line" d="M0 1000 L0 1000 L0 533 L103 533 L103 459 L310 459 L310 438 L517 438 L517 415 L723 415 L723 398 L930 398 L930 357 L1137 357 L1137 326 L1343 326 L1343 312 L1550 312 L1550 304 L1757 304 L1757 284 L1963 284 L1963 199 L2170 199 L2170 182 L2377 182 L2377 172 L2583 172"/>
+              <rect class="hit" x="0" y="0" width="103" height="1000"><title>1 Nov 2026 · OMR 280.000 · running total OMR 280.000</title></rect>
+              <rect class="hit" x="103" y="0" width="104" height="1000"><title>2 Nov 2026 · OMR 44.800 · running total OMR 324.800</title></rect>
+              <rect class="hit" x="207" y="0" width="103" height="1000"><title>3 Nov 2026 · OMR 0.000 · running total OMR 324.800</title></rect>
+              <rect class="hit" x="310" y="0" width="103" height="1000"><title>4 Nov 2026 · OMR 12.100 · running total OMR 336.900</title></rect>
+              <rect class="hit" x="413" y="0" width="104" height="1000"><title>5 Nov 2026 · OMR 0.000 · running total OMR 336.900</title></rect>
+              <rect class="hit" x="517" y="0" width="103" height="1000"><title>6 Nov 2026 · OMR 14.250 · running total OMR 351.150</title></rect>
+              <rect class="hit" x="620" y="0" width="103" height="1000"><title>7 Nov 2026 · OMR 0.000 · running total OMR 351.150</title></rect>
+              <rect class="hit" x="723" y="0" width="104" height="1000"><title>8 Nov 2026 · OMR 9.750 · running total OMR 360.900</title></rect>
+              <rect class="hit" x="827" y="0" width="103" height="1000"><title>9 Nov 2026 · OMR 0.000 · running total OMR 360.900</title></rect>
+              <rect class="hit" x="930" y="0" width="103" height="1000"><title>10 Nov 2026 · OMR 25.000 · running total OMR 385.900</title></rect>
+              <rect class="hit" x="1033" y="0" width="104" height="1000"><title>11 Nov 2026 · OMR 0.000 · running total OMR 385.900</title></rect>
+              <rect class="hit" x="1137" y="0" width="103" height="1000"><title>12 Nov 2026 · OMR 18.500 · running total OMR 404.400</title></rect>
+              <rect class="hit" x="1240" y="0" width="103" height="1000"><title>13 Nov 2026 · OMR 0.000 · running total OMR 404.400</title></rect>
+              <rect class="hit" x="1343" y="0" width="104" height="1000"><title>14 Nov 2026 · OMR 8.350 · running total OMR 412.750</title></rect>
+              <rect class="hit" x="1447" y="0" width="103" height="1000"><title>15 Nov 2026 · OMR 0.000 · running total OMR 412.750</title></rect>
+              <rect class="hit" x="1550" y="0" width="103" height="1000"><title>16 Nov 2026 · OMR 4.800 · running total OMR 417.550</title></rect>
+              <rect class="hit" x="1653" y="0" width="104" height="1000"><title>17 Nov 2026 · OMR 0.000 · running total OMR 417.550</title></rect>
+              <rect class="hit" x="1757" y="0" width="103" height="1000"><title>18 Nov 2026 · OMR 11.900 · running total OMR 429.450</title></rect>
+              <rect class="hit" x="1860" y="0" width="103" height="1000"><title>19 Nov 2026 · OMR 0.000 · running total OMR 429.450</title></rect>
+              <rect class="hit" x="1963" y="0" width="104" height="1000"><title>20 Nov 2026 · OMR 51.200 · running total OMR 480.650</title></rect>
+              <rect class="hit" x="2067" y="0" width="103" height="1000"><title>21 Nov 2026 · OMR 0.000 · running total OMR 480.650</title></rect>
+              <rect class="hit" x="2170" y="0" width="103" height="1000"><title>22 Nov 2026 · OMR 10.000 · running total OMR 490.650</title></rect>
+              <rect class="hit" x="2273" y="0" width="104" height="1000"><title>23 Nov 2026 · OMR 0.000 · running total OMR 490.650</title></rect>
+              <rect class="hit" x="2377" y="0" width="103" height="1000"><title>24 Nov 2026 · OMR 6.200 · running total OMR 496.850</title></rect>
+              <rect class="hit" x="2480" y="0" width="103" height="1000"><title>25 Nov 2026 · OMR 0.000 · running total OMR 496.850</title></rect>
+            </svg>
+            <span class="x-label" style="left: 1.7%">1 Nov</span>
+            <span class="x-label" style="left: 25.0%">8</span>
+            <span class="x-label" style="left: 48.3%">15</span>
+            <span class="x-label" style="left: 71.7%">22</span>
+            <span class="x-label" style="left: 95.0%">29</span>
+          </div>
+        </section>
+        <section class="card card-pad">
+          <div class="card-head">
+            <h2>By category</h2>
+            <p>Share of November</p>
+          </div>
+          <div class="cat-strip" aria-hidden="true">
+            <span class="cat-housing" style="flex-grow: 280000" title="Housing · 56.4%"></span>
+            <span class="cat-groceries" style="flex-grow: 105750" title="Groceries · 21.3%"></span>
+            <span class="cat-dining" style="flex-grow: 4800" title="Dining · 1.0%"></span>
+            <span class="cat-transport" style="flex-grow: 24000" title="Transport · 4.8%"></span>
+            <span class="cat-utilities" style="flex-grow: 45450" title="Utilities · 9.1%"></span>
+            <span class="cat-health" style="flex-grow: 8350" title="Health · 1.7%"></span>
+            <span class="cat-leisure" style="flex-grow: 10000" title="Leisure · 2.0%"></span>
+            <span class="cat-other" style="flex-grow: 18500" title="Other · 3.7%"></span>
+          </div>
+          <ul class="cat-list">
+            <li class="cat-row cat-housing">
+              <span class="cat-name"><i class="dot"></i>Housing</span>
+              <span class="cat-bar"><span class="cat-housing" style="width: 56.4%"></span></span>
+              <span class="cat-amt">280.000</span>
+              <span class="cat-share">56.4%</span>
+            </li>
+            <li class="cat-row cat-groceries">
+              <span class="cat-name"><i class="dot"></i>Groceries</span>
+              <span class="cat-bar"><span class="cat-groceries" style="width: 21.3%"></span></span>
+              <span class="cat-amt">105.750</span>
+              <span class="cat-share">21.3%</span>
+            </li>
+            <li class="cat-row cat-utilities">
+              <span class="cat-name"><i class="dot"></i>Utilities</span>
+              <span class="cat-bar"><span class="cat-utilities" style="width: 9.1%"></span></span>
+              <span class="cat-amt">45.450</span>
+              <span class="cat-share">9.1%</span>
+            </li>
+            <li class="cat-row cat-transport">
+              <span class="cat-name"><i class="dot"></i>Transport</span>
+              <span class="cat-bar"><span class="cat-transport" style="width: 4.8%"></span></span>
+              <span class="cat-amt">24.000</span>
+              <span class="cat-share">4.8%</span>
+            </li>
+            <li class="cat-row cat-other">
+              <span class="cat-name"><i class="dot"></i>Other</span>
+              <span class="cat-bar"><span class="cat-other" style="width: 3.7%"></span></span>
+              <span class="cat-amt">18.500</span>
+              <span class="cat-share">3.7%</span>
+            </li>
+            <li class="cat-row cat-leisure">
+              <span class="cat-name"><i class="dot"></i>Leisure</span>
+              <span class="cat-bar"><span class="cat-leisure" style="width: 2.0%"></span></span>
+              <span class="cat-amt">10.000</span>
+              <span class="cat-share">2.0%</span>
+            </li>
+            <li class="cat-row cat-health">
+              <span class="cat-name"><i class="dot"></i>Health</span>
+              <span class="cat-bar"><span class="cat-health" style="width: 1.7%"></span></span>
+              <span class="cat-amt">8.350</span>
+              <span class="cat-share">1.7%</span>
+            </li>
+            <li class="cat-row cat-dining">
+              <span class="cat-name"><i class="dot"></i>Dining</span>
+              <span class="cat-bar"><span class="cat-dining" style="width: 1.0%"></span></span>
+              <span class="cat-amt">4.800</span>
+              <span class="cat-share">1.0%</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+      <section class="card card-pad">
+        <div class="card-head">
+          <h2>Latest expenses</h2>
+          <a href="#">View all in November</a>
+        </div>
+        <ul class="latest">
+          <li>
+            <span class="when">24 Nov</span>
+            <span class="what"><strong>Water bill</strong><span class="cat-utilities"><i class="dot"></i>Utilities</span></span>
+            <span class="amt">6.200</span>
+          </li>
+          <li>
+            <span class="when">22 Nov</span>
+            <span class="what"><strong>Football match tickets</strong><span class="cat-leisure"><i class="dot"></i>Leisure</span></span>
+            <span class="amt">10.000</span>
+          </li>
+          <li>
+            <span class="when">20 Nov</span>
+            <span class="what"><strong>Weekly groceries</strong><span class="cat-groceries"><i class="dot"></i>Groceries</span></span>
+            <span class="amt">51.200</span>
+          </li>
+          <li>
+            <span class="when">18 Nov</span>
+            <span class="what"><strong>Fuel</strong><span class="cat-transport"><i class="dot"></i>Transport</span></span>
+            <span class="amt">11.900</span>
+          </li>
+          <li>
+            <span class="when">16 Nov</span>
+            <span class="what"><strong>Coffee with colleagues</strong><span class="cat-dining"><i class="dot"></i>Dining</span></span>
+            <span class="amt">4.800</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+    <footer class="foot">Expense Ledger 1.0.0 · Amounts in Omani rial (OMR)</footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+node_modules/
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+.env
+twin-a-flask/data/*.json
+twin-a-flask/data/*.tmp
+twin-b-express/data/*.json
+twin-b-express/data/*.tmp

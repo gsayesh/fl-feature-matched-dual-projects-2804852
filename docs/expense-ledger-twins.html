@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Expense Ledger: twin builds (Python/Flask and Node/Express)</title>
+<style>
+@font-face { font-family: "Geist"; src: url("../spec/assets/fonts/geist-latin.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("../spec/assets/fonts/geist-mono-latin.woff2") format("woff2"); font-weight: 100 900; }
+:root { --ink: #0e1013; --text: #eef0f2; --muted: #8d939c; --mint: #5fd3a8; --green: #0d6b53; --py: #f2c14e; --node: #8bd17c;
+  --paper: #f5f4f0; --card: #ffffff; --line: #e3e0d7; --line-2: #eeebe4; --body: #16181d; --body-2: #4a4f57; --body-3: #7a7f88; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1600px; height: 1200px; overflow: hidden; background: var(--ink); }
+body { font-family: "Geist", system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; }
+.mono, code, pre { font-family: "Geist Mono", ui-monospace, monospace; }
+
+/* cover */
+.hero { position: relative; width: 1600px; height: 1200px; overflow: hidden;
+  background: radial-gradient(1100px 620px at 50% 58%, rgba(13,107,83,0.30), rgba(13,107,83,0) 70%),
+              radial-gradient(900px 500px at 50% 112%, rgba(95,211,168,0.10), rgba(95,211,168,0) 70%),
+              linear-gradient(180deg, #111418 0%, #0c0e11 100%); }
+.hero-head { position: absolute; left: 238px; right: 238px; top: 58px; display: flex; align-items: flex-end; justify-content: space-between; }
+.eyebrow { font: 600 17px/1 "Geist Mono", monospace; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mint); }
+.headline { margin-top: 18px; font-size: 76px; line-height: 0.98; font-weight: 650; letter-spacing: -0.045em; }
+.headline span { color: #8d939c; }
+.stack-pair { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; padding-bottom: 6px; }
+.stack { display: inline-flex; align-items: center; gap: 12px; height: 46px; padding: 0 20px 0 14px; border-radius: 999px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10); font-size: 20px; font-weight: 550; letter-spacing: -0.01em; }
+.chip { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; font: 700 14px/1 "Geist Mono", monospace; color: #0e1013; }
+.chip.a { background: var(--py); } .chip.b { background: var(--node); }
+.window { position: absolute; left: 238px; top: 244px; width: 1124px; height: 822px; border-radius: 20px; overflow: hidden;
+  background: #1a1d22; border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 50px 120px -30px rgba(0,0,0,0.85), 0 18px 40px -20px rgba(0,0,0,0.6), 0 0 0 10px rgba(255,255,255,0.025); }
+.bar { position: relative; height: 50px; display: grid; grid-template-columns: 1fr 1fr; background: #1d2026; border-bottom: 1px solid #2c3037; }
+.tab { display: flex; align-items: center; gap: 11px; padding: 0 22px; font-size: 16px; color: #aab0b8; white-space: nowrap; }
+.tab .dots { display: flex; gap: 7px; margin-right: 8px; }
+.tab .dots i { width: 12px; height: 12px; border-radius: 50%; background: #3a3f47; }
+.tab strong { font-weight: 600; color: #fff; }
+.tab .url { font: 500 14px "Geist Mono", monospace; color: #8d939c; padding: 6px 10px; border-radius: 8px; background: #15171b; }
+.tab.left .url { margin-left: 6px; }
+.tab.right { padding-left: 150px; }
+.tab.right .url { margin-left: auto; }
+.tab .chip { width: 22px; height: 22px; font-size: 12px; border-radius: 6px; }
+.screen { position: relative; width: 1124px; height: 772px; overflow: hidden; background: #f3f2ee; }
+.screen iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 1000px; border: 0; transform: scale(0.78056); transform-origin: 0 0; background: #f3f2ee; }
+.screen .fa { clip-path: inset(0 720px 0 0); }
+.screen .fb { clip-path: inset(0 0 0 720px); }
+.seam { position: absolute; top: 0; bottom: 0; left: 561px; width: 2px; background: var(--mint); box-shadow: 0 0 0 1px rgba(95,211,168,0.25), 0 0 18px rgba(95,211,168,0.55); }
+.seal { position: absolute; left: 562px; top: 25px; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px;
+  height: 40px; padding: 0 16px 0 7px; border-radius: 999px; background: #0e1013; border: 2px solid var(--mint); white-space: nowrap; }
+.seal i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--mint); color: #0e1013; font: 800 19px/1 "Geist Mono", monospace; font-style: normal; }
+.seal span { font: 600 15px/1 "Geist", sans-serif; color: #fff; }
+.proof { position: absolute; left: 238px; right: 238px; bottom: 28px; display: grid; grid-template-columns: repeat(4, 1fr); }
+.proof div { padding: 0 0 0 22px; border-left: 2px solid #2a2e35; }
+.proof div:first-child { border-left-color: var(--mint); }
+.proof b { display: block; font: 600 34px/1 "Geist Mono", monospace; letter-spacing: -0.03em; color: #fff; }
+.proof span { display: block; margin-top: 9px; font-size: 16px; color: var(--muted); }
+
+/* document pages (print only) */
+.page { display: none; position: relative; width: 1600px; height: 1200px; overflow: hidden; padding: 92px 88px 60px;
+  background: var(--paper); color: var(--body); }
+.run { position: absolute; top: 36px; left: 88px; right: 88px; display: flex; justify-content: space-between;
+  font: 500 13px/1 "Geist Mono", monospace; letter-spacing: 0.1em; text-transform: uppercase; color: #9a9ea6; }
+.run b { color: var(--green); font-weight: 600; }
+.kicker { font: 600 14px/1 "Geist Mono", monospace; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green); }
+.page h2 { margin-top: 14px; font-size: 46px; line-height: 1.05; font-weight: 650; letter-spacing: -0.035em; }
+.lede { margin-top: 14px; max-width: 1080px; font-size: 19px; line-height: 1.5; color: var(--body-2); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+.cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 46px; }
+.twin { padding: 32px 34px; }
+.twin-head { display: flex; align-items: center; gap: 12px; }
+.twin-head .chip { width: 34px; height: 34px; font-size: 17px; border-radius: 9px; }
+.twin-head h3 { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; }
+.twin-head p { margin-left: auto; font: 500 13px "Geist Mono", monospace; color: var(--body-3); }
+.facts { margin-top: 28px; display: grid; grid-template-columns: 112px 1fr; gap: 20px 12px; font-size: 17px; line-height: 1.45; }
+.facts dt { font: 600 12px/1.6 "Geist Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--body-3); }
+.facts dd code { font-size: 14.5px; background: #f1efe9; padding: 2px 7px; border-radius: 6px; }
+.shared { padding: 32px 34px; background: #0f1215; color: #e6e8ea; border-color: #0f1215; }
+.shared h3 { font-size: 22px; font-weight: 650; letter-spacing: -0.015em; }
+.shared ul { list-style: none; margin-top: 22px; display: grid; gap: 17px; }
+.shared li { font-size: 16px; color: #aeb4bc; line-height: 1.45; }
+.shared li code { display: block; margin-bottom: 3px; font-size: 14px; color: var(--mint); }
+.why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; }
+.why div { padding: 26px 30px; }
+.why b { display: block; font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
+.why p { margin-top: 10px; font-size: 16.5px; line-height: 1.55; color: var(--body-2); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 48px; }
+.stats div { padding-left: 20px; border-left: 2px solid var(--line); }
+.stats div:first-child { border-left-color: var(--green); }
+.stats b { display: block; font: 600 40px/1 "Geist Mono", monospace; letter-spacing: -0.03em; }
+.stats span { display: block; margin-top: 10px; font-size: 16px; color: var(--body-3); }
+
+.reqs { columns: 2; column-gap: 44px; margin-top: 34px; }
+.req { break-inside: avoid; padding: 18px 22px 18px; margin-bottom: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.req-head { display: flex; align-items: baseline; gap: 12px; }
+.req-id { flex: none; white-space: nowrap; font: 700 13px/1 "Geist Mono", monospace; letter-spacing: 0.04em; color: var(--green); background: #e2f0ea; padding: 5px 8px; border-radius: 6px; }
+.req h4 { flex: none; font-size: 18px; font-weight: 650; letter-spacing: -0.01em; }
+.req .area { margin-left: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; font: 500 12px "Geist Mono", monospace; color: var(--body-3); white-space: nowrap; }
+.req ul { margin: 10px 0 0 18px; display: grid; gap: 5px; }
+.req li { font-size: 14px; line-height: 1.45; color: var(--body-2); }
+
+table { width: 100%; border-collapse: collapse; }
+.tbl { margin-top: 30px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.tbl th { padding: 11px 14px; background: #faf9f6; border-bottom: 1px solid var(--line); text-align: left;
+  font: 600 11.5px/1.2 "Geist Mono", monospace; letter-spacing: 0.08em; text-transform: uppercase; color: var(--body-3); }
+.tbl td { padding: 9px 14px; border-bottom: 1px solid var(--line-2); font-size: 14px; line-height: 1.35; vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl td.m, .tbl td code { font-family: "Geist Mono", monospace; font-size: 12.5px; color: var(--body-2); }
+.tbl td.id { font: 700 13px "Geist Mono", monospace; color: var(--green); white-space: nowrap; }
+.ok { display: inline-flex; align-items: center; gap: 6px; font: 600 12.5px "Geist Mono", monospace; color: #0d6b53; white-space: nowrap; }
+.ok::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #13a874; }
+.msgs { display: grid; grid-template-columns: 1.55fr 1fr; gap: 26px; margin-top: 30px; align-items: start; }
+.msgs .tbl { margin-top: 0; }
+.msgs td.txt { font-weight: 500; color: var(--body); }
+.msgs .tbl td { padding: 14px 16px; font-size: 15.5px; }
+.msgs .tbl td.m { font-size: 13.5px; }
+.msgs .tbl th { padding: 14px 16px; }
+.side-stack { display: grid; gap: 22px; }
+.rules { padding: 26px 30px; }
+.rules h3 { font-size: 19px; font-weight: 650; }
+.rules ul { margin: 10px 0 0 18px; display: grid; gap: 6px; }
+.rules li { font-size: 15.5px; line-height: 1.5; color: var(--body-2); }
+.cats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.cats span { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 13px 0 11px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; font-weight: 500; background: #fff; }
+.cats i { width: 9px; height: 9px; border-radius: 3px; }
+
+.pairs { display: grid; gap: 22px; margin-top: 18px; }
+.pair-cap { display: flex; align-items: center; gap: 14px; height: 30px; }
+.pair-cap .n { font: 700 13px "Geist Mono", monospace; color: var(--green); }
+.pair-cap b { font-size: 19px; font-weight: 650; letter-spacing: -0.01em; }
+.pair-cap code { font-size: 13px; color: var(--body-3); }
+.pair-cap .same { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border-radius: 999px;
+  background: #e2f0ea; color: #0b5a45; font: 600 12.5px "Geist Mono", monospace; }
+.pair-row { display: grid; grid-template-columns: 605px 605px; gap: 0 54px; justify-content: center; margin-top: 10px; position: relative; }
+.pair-row::after { content: "="; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center;
+  width: 38px; height: 38px; border-radius: 50%; background: var(--green); color: #fff; font: 700 20px/1 "Geist Mono", monospace; }
+.frame { width: 605px; border-radius: 10px; overflow: hidden; border: 1px solid #d9d5cb; background: #fff; box-shadow: 0 12px 30px -18px rgba(22,24,29,0.35); }
+.frame-bar { display: flex; align-items: center; gap: 8px; height: 26px; padding: 0 10px; background: #ebe9e3; border-bottom: 1px solid #d9d5cb; font-size: 12px; color: var(--body-2); white-space: nowrap; overflow: hidden; }
+.frame-bar .chip { width: 17px; height: 17px; font-size: 10px; border-radius: 5px; }
+.frame-bar strong { font-weight: 600; color: var(--body); }
+.frame-bar code { margin-left: auto; font-size: 11px; color: var(--body-3); overflow: hidden; text-overflow: ellipsis; }
+.frame-view { position: relative; width: 605px; height: 392px; overflow: hidden; background: #f3f2ee; }
+.frame-view iframe { position: absolute; left: 0; top: 0; width: 1440px; height: 1000px; border: 0; transform: scale(0.42014); transform-origin: 0 0; }
+
+.ev { display: grid; grid-template-columns: 1.06fr 1fr; gap: 24px; margin-top: 30px; align-items: start; }
+.term { background: #0f1215; color: #cfd3d8; border-radius: 14px; padding: 18px 20px; font: 400 12.5px/1.6 "Geist Mono", monospace; white-space: pre; overflow: hidden; }
+.term .c { color: #6f7680; } .term .g { color: #5fd3a8; } .term .y { color: #f2c14e; } .term .w { color: #fff; font-weight: 600; }
+.term-title { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 15px; font-weight: 650; color: var(--body); }
+.term-title .chip { width: 22px; height: 22px; font-size: 12px; border-radius: 6px; }
+.ev-right { display: grid; gap: 18px; }
+.cmp { margin-top: 22px; padding: 18px 22px 20px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+.cmp-title { font-size: 15px; font-weight: 650; }
+.cells { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 26px; margin-top: 12px; }
+.cell { display: grid; grid-template-columns: 30px 1fr auto auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line-2); font-size: 14px; }
+.cell .n { font: 700 12.5px "Geist Mono", monospace; color: var(--green); }
+.cell .h { font: 500 12.5px "Geist Mono", monospace; color: var(--body-3); }
+
+.run2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; margin-top: 30px; }
+.run2 > div { min-width: 0; }
+.code { background: #0f1215; color: #d6dade; border-radius: 14px; padding: 22px 26px; font: 400 15.5px/1.7 "Geist Mono", monospace; white-space: pre; overflow: hidden; }
+.code .c { color: #6f7680; } .code .k { color: #f2c14e; } .code .s { color: #8bd17c; }
+.block-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }
+.block-title .chip { width: 26px; height: 26px; font-size: 13px; }
+.block-title em { margin-left: auto; font: 500 13px "Geist Mono", monospace; font-style: normal; color: var(--body-3); }
+.tree { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px; font: 400 14.5px/1.65 "Geist Mono", monospace; white-space: pre; color: var(--body-2); }
+.tree b { color: var(--body); font-weight: 600; }
+.tree i { font-style: normal; color: #a0a4ab; }
+.small-code { font-size: 13.2px; line-height: 1.62; padding: 18px 22px; }
+.code-note { margin-top: 10px; font-size: 14.5px; line-height: 1.5; color: var(--body-2); }
+
+.walk { display: grid; grid-template-columns: 1.25fr 1fr; gap: 26px; margin-top: 32px; align-items: start; }
+.steps { list-style: none; display: grid; gap: 10px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 14px; padding: 19px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.steps li::before { content: counter(s, decimal-leading-zero); font: 700 15px/1.5 "Geist Mono", monospace; color: var(--green); }
+.steps b { display: block; font-size: 18px; font-weight: 650; }
+.steps p { margin-top: 4px; font-size: 15.5px; line-height: 1.5; color: var(--body-2); }
+.hand { padding: 30px 32px; }
+.hand h3 { font-size: 20px; font-weight: 650; }
+.hand ul { margin: 14px 0 0 18px; display: grid; gap: 8px; }
+.hand li { font-size: 16px; line-height: 1.5; color: var(--body-2); }
+.hand.dark { background: #0f1215; border-color: #0f1215; color: #e6e8ea; }
+.hand.dark p { margin-top: 12px; font-size: 16.5px; line-height: 1.55; color: #aeb4bc; }
+
+@page { size: 1600px 1200px; margin: 0; }
+@media print {
+  html, body { width: 1600px; height: auto; overflow: visible; background: var(--paper); }
+  .hero { break-after: page; }
+  .page { display: block; break-after: page; }
+  .page:last-child { break-after: auto; }
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <header class="hero-head">
+    <div>
+      <p class="eyebrow">Expense Ledger · twin builds</p>
+      <h1 class="headline">Same app.<br><span>Two codebases.</span></h1>
+    </div>
+    <div class="stack-pair">
+      <span class="stack"><span class="chip a">A</span>Python 3 · Flask · Jinja2</span>
+      <span class="stack"><span class="chip b">B</span>Node.js · Express · EJS</span>
+    </div>
+  </header>
+  <div class="window">
+    <div class="bar">
+      <div class="tab left"><span class="dots"><i></i><i></i><i></i></span><span class="chip a">A</span><strong>Twin A</strong>Flask<span class="url">127.0.0.1:5001</span></div>
+      <div class="tab right"><span class="chip b">B</span><strong>Twin B</strong>Express<span class="url">127.0.0.1:5002</span></div>
+    </div>
+    <div class="screen">
+      <iframe class="fa" src="../demo/twin-a/01-overview.html" scrolling="no" title="Twin A, overview"></iframe>
+      <iframe class="fb" src="../demo/twin-b/01-overview.html" scrolling="no" title="Twin B, overview"></iframe>
+      <div class="seam"></div>
+    </div>
+    <div class="seal"><i>=</i><span>0 pixels different</span></div>
+  </div>
+  <footer class="proof">
+    <div><b>218/218</b><span>responses byte-identical</span></div>
+    <div><b>15/15</b><span>screens pixel-identical</span></div>
+    <div><b>82/82</b><span>tests passing, 41 per twin</span></div>
+    <div><b>18/18</b><span>requirements traced</span></div>
+  </footer>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>02 / 15</span></div>
+  <p class="kicker">The delivery</p>
+  <h2>Two runnable projects, one specification</h2>
+  <p class="lede">Twin A and Twin B are written separately, each in the normal style of its framework. They share only framework-neutral files, so each folder runs on its own.</p>
+  <div class="cols-3">
+    <div class="card twin">
+      <div class="twin-head"><span class="chip a">A</span><h3>Twin A</h3><p>Python 3.10+</p></div>
+      <dl class="facts">
+        <dt>Folder</dt><dd><code>twin-a-flask/</code></dd>
+        <dt>Run</dt><dd><code>python run.py</code><br><span style="color:#7a7f88;font-size:14px">opens 127.0.0.1:5001</span></dd>
+        <dt>Test</dt><dd><code>python -m pytest -v</code><br><span style="color:#7a7f88;font-size:14px">41 tests, all passing</span></dd>
+        <dt>Needs</dt><dd>Flask 3, pytest</dd>
+        <dt>Code</dt><dd>1459 lines of Python in 11 modules, 472 lines of Jinja2</dd>
+      </dl>
+    </div>
+    <div class="card shared">
+      <h3>Shared, as copies: neutral files only</h3>
+      <ul>
+        <li><code>spec/requirements.json</code>18 requirements, every message, the categories</li>
+        <li><code>spec/scenarios.json</code>20 scenarios, 88 requests with exact expected responses; both suites run them</li>
+        <li><code>spec/seed.json</code>36 sample expenses, September to November 2026</li>
+        <li><code>spec/assets/</code>one stylesheet, the Geist fonts and the icon</li>
+        <li><code>tools/</code>parity check, screenshots, traceability, sync</li>
+      </ul>
+    </div>
+    <div class="card twin">
+      <div class="twin-head"><span class="chip b">B</span><h3>Twin B</h3><p>Node.js 18.17+</p></div>
+      <dl class="facts">
+        <dt>Folder</dt><dd><code>twin-b-express/</code></dd>
+        <dt>Run</dt><dd><code>npm start</code><br><span style="color:#7a7f88;font-size:14px">opens 127.0.0.1:5002</span></dd>
+        <dt>Test</dt><dd><code>npm test</code><br><span style="color:#7a7f88;font-size:14px">41 tests, all passing</span></dd>
+        <dt>Needs</dt><dd>Express 5, EJS; tests use built-in node:test</dd>
+        <dt>Code</dt><dd>1429 lines of JavaScript in 11 modules, 472 lines of EJS</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="why">
+    <div class="card"><b>Two mainstream stacks</b><p>Python with Flask and Node.js with Express are the two most common small-server stacks, so either build is easy to host and to hand to any developer.</p></div>
+    <div class="card"><b>Pages built on the server</b><p>Every screen is plain HTML from the server, so the two builds can be compared byte for byte. There is no front-end build step and no JavaScript to install.</p></div>
+    <div class="card"><b>One command each</b><p>One command runs a build and one tests it. There is no database server: the data is one JSON file in the same format for both, so a file written by one build can be opened by the other.</p></div>
+  </div>
+  <div class="stats">
+    <div><b>218/218</b><span>responses byte-identical (parity check)</span></div>
+    <div><b>15/15</b><span>screens pixel-identical in Chrome</span></div>
+    <div><b>82/82</b><span>tests passing, same names in both suites</span></div>
+    <div><b>18/18</b><span>requirements traced to code and tests</span></div>
+  </div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>03 / 15</span></div>
+  <p class="kicker">Requirements 1/2 · FR-01–09</p>
+  <h2>Functional requirements</h2>
+  <p class="lede">Short and plain. Each requirement is tagged in the code of both builds (search for its ID) and proved by tests in both suites.</p>
+  <div class="reqs"><div class="req"><div class="req-head"><span class="req-id">FR-01</span><h4>Shared layout and navigation</h4><span class="area">all screens</span></div><ul><li>Every screen has the same sidebar with five links: Overview, Expenses, Add expense, Reports and Data.</li><li>The link for the current screen is highlighted and carries aria-current=&quot;page&quot;.</li><li>The browser tab title reads &quot;&lt;Screen&gt; · Expense Ledger&quot;. The footer reads &quot;Expense Ledger 1.0.0 · Amounts in Omani rial (OMR)&quot;.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-02</span><h4>Monthly headline figures</h4><span class="area">GET /, GET /?month=YYYY-MM</span></div><ul><li>Shows four figures for the selected month: total spent, number of expenses, daily average and largest expense.</li><li>The total also shows the change against the previous month as a percentage. If the previous month has no spending, it says &quot;No spending in &lt;Month&gt;&quot;.</li><li>Daily average = total ÷ days in the month. For the current month, total ÷ days elapsed so far.</li><li>With no month in the URL, the month of the most recent expense is shown, or the current month if there are no expenses. Previous/next links move one month.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-03</span><h4>Spending by category</h4><span class="area">GET /</span></div><ul><li>One row per category with spending in the month: name, bar, amount and share of the month (one decimal).</li><li>Rows are sorted by amount, highest first. Equal amounts keep the fixed category order.</li><li>A composition strip above the rows shows the same shares in the fixed category order.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-04</span><h4>Spending-through-the-month chart</h4><span class="area">GET /</span></div><ul><li>A step chart of the running total by day for the selected month, with the previous month drawn as a dashed reference line.</li><li>The y-axis uses round gridlines (1, 2 or 5 × 10ⁿ OMR, at most 5 lines).</li><li>Hovering a day shows its date, that day&#x27;s spending and the running total (native SVG tooltip, no JavaScript).</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-05</span><h4>Latest expenses</h4><span class="area">GET /</span></div><ul><li>Lists the five most recent expenses of the month (newest date first, then newest entry), with a link to the full filtered list.</li><li>A month without expenses shows &quot;No expenses in &lt;Month Year&gt;.&quot; and an Add expense button.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-06</span><h4>Expense list</h4><span class="area">GET /expenses</span></div><ul><li>A table with date, description (notes underneath), category, amount, and Edit / Delete actions.</li><li>Above the table: the number of rows shown and their total, e.g. &quot;36 expenses · OMR 1,540.800&quot;, plus the active sort order.</li><li>After an add, edit or delete, a confirmation notice is shown (see Messages).</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-07</span><h4>Filter and search</h4><span class="area">GET /expenses?month=&amp;category=&amp;q=</span></div><ul><li>Filter by month (All months or one month that has data), by category (All categories or one), and by free text.</li><li>The text search ignores case and matches the description or the notes. All filters are combined (AND).</li><li>The filter state lives in the URL, so every filtered view can be bookmarked. Reset clears all filters.</li><li>With no matches: &quot;No expenses match these filters.&quot; With no data at all: &quot;No expenses yet.&quot;</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-08</span><h4>Sorting</h4><span class="area">GET /expenses?sort=</span></div><ul><li>Sort options: Newest first (default), Oldest first, Amount: high to low, Amount: low to high.</li><li>Ties break by entry number: newest entry first for descending sorts, oldest first for ascending sorts.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-09</span><h4>Add an expense</h4><span class="area">GET /expenses/new, POST /expenses</span></div><ul><li>Fields, in screen order: date (defaults to today), amount, description, category and optional notes.</li><li>A valid form is saved and the app goes to the list (HTTP 303) with the notice &quot;Expense added.&quot;</li></ul></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>04 / 15</span></div>
+  <p class="kicker">Requirements 2/2 · FR-10–18</p>
+  <h2>Functional requirements (continued)</h2>
+  
+  <div class="reqs"><div class="req"><div class="req-head"><span class="req-id">FR-10</span><h4>Validation with exact messages</h4><span class="area">POST /expenses, POST /expenses/&lt;id&gt;</span></div><ul><li>Every field is checked on the server, rules in the order listed under Messages. Each field shows at most one message; the summary lists them in screen order.</li><li>An invalid form comes back with HTTP 422, the values entered, a summary box linking to each field, and the message under each field.</li><li>Amounts accept digits with up to three decimals; thousands commas are ignored. More than three decimals is rejected, never rounded.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-11</span><h4>Edit an expense</h4><span class="area">GET /expenses/&lt;id&gt;/edit, POST /expenses/&lt;id&gt;</span></div><ul><li>The form opens with the saved values, uses the same validation, and saves with the notice &quot;Expense updated.&quot;</li><li>An unknown or malformed id shows the 404 page.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-12</span><h4>Delete with confirmation</h4><span class="area">GET /expenses/&lt;id&gt;/delete, POST /expenses/&lt;id&gt;/delete</span></div><ul><li>A confirmation screen shows the expense and warns that this cannot be undone. Cancel returns to the list.</li><li>Confirming deletes the expense and returns to the list with the notice &quot;Expense deleted.&quot; Entry numbers are never reused.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-13</span><h4>Monthly report</h4><span class="area">GET /reports?month=YYYY-MM</span></div><ul><li>All eight categories with this month, previous month, change in OMR, change in % and share of the month, plus a Total row.</li><li>Change % shows &quot;—&quot; when the previous month is zero. Previous/next links move one month; the default month follows FR-02.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-14</span><h4>CSV export</h4><span class="area">GET /export/expenses.csv, GET /export/report.csv?month=</span></div><ul><li>The list export uses the current filters and sort. The report export holds the monthly report.</li><li>Files are UTF-8 with a byte-order mark (Arabic text opens correctly in Excel) and CRLF line endings, and use RFC 4180 quoting.</li><li>Text cells that start with = + - @ get a leading apostrophe (formula-injection guard). Amounts are plain numbers with three decimals.</li><li>File names: expenses-all.csv or expenses-YYYY-MM.csv, and report-YYYY-MM.csv.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-15</span><h4>Read-only JSON API</h4><span class="area">GET /api/expenses, GET /api/summary?month=</span></div><ul><li>/api/expenses takes the same filters and sort as the list. /api/summary returns the overview figures for a month.</li><li>Responses are compact UTF-8 JSON with stable key order, and give each amount as a string (&quot;18.450&quot;) and as an integer in baisa.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-16</span><h4>Data tools</h4><span class="area">GET /data, POST /data/reset …</span></div><ul><li>Shows how many expenses are stored, the date range they cover and where the data file is.</li><li>Restore sample data and Delete all expenses each need a confirmation tick. Without it the page comes back with HTTP 422 and &quot;Tick the box to confirm.&quot;</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-17</span><h4>Storage and money rules</h4><span class="area">data/ledger.json</span></div><ul><li>Data lives in one JSON file. On first run it is created from seed.json, and every save is atomic (temporary file, then rename).</li><li>Amounts are stored as whole baisa (1 OMR = 1000 baisa) and never as floating point. They display as OMR 1,234.500.</li><li>Averages and percentages round half away from zero, using integer arithmetic only.</li><li>Dates are ISO 8601 (YYYY-MM-DD) and show as &quot;24 Nov 2026&quot;.</li></ul></div><div class="req"><div class="req-head"><span class="req-id">FR-18</span><h4>Errors, status codes and redirects</h4><span class="area">any unknown URL</span></div><ul><li>Unknown pages return the 404 page. A wrong method on a known URL returns the 405 page. Routes are case-sensitive and have no trailing slash.</li><li>Every successful POST redirects with 303 See Other and an empty body, so a refresh never resubmits a form.</li></ul></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>05 / 15</span></div>
+  <p class="kicker">Messages and rules</p>
+  <h2>The same words, in the same places</h2>
+  <p class="lede">Every message lives in one table per build (<code>config.py</code> and <code>config.js</code>). The shared scenarios check each one character for character.</p>
+  <div class="msgs">
+    <div><div class="tbl"><table><thead><tr><th>Field</th><th>Rule</th><th>Message, word for word</th></tr></thead><tbody><tr><td class="m">date</td><td>empty</td><td class="txt">Enter the date of the expense.</td></tr><tr><td class="m">date</td><td>not a real date in 2000–2099 (YYYY-MM-DD)</td><td class="txt">Enter a real date in the format YYYY-MM-DD.</td></tr><tr><td class="m">amount</td><td>empty</td><td class="txt">Enter an amount.</td></tr><tr><td class="m">amount</td><td>not a plain number</td><td class="txt">Amount must be a number, like 12.500.</td></tr><tr><td class="m">amount</td><td>more than 3 decimals</td><td class="txt">Amount can have at most 3 decimal places.</td></tr><tr><td class="m">amount</td><td>zero</td><td class="txt">Amount must be more than 0.000.</td></tr><tr><td class="m">amount</td><td>above 100,000.000</td><td class="txt">Amount must be 100,000.000 or less.</td></tr><tr><td class="m">description</td><td>empty</td><td class="txt">Enter a description.</td></tr><tr><td class="m">description</td><td>more than 80 characters</td><td class="txt">Description must be 80 characters or fewer.</td></tr><tr><td class="m">category</td><td>empty or unknown</td><td class="txt">Choose a category.</td></tr><tr><td class="m">notes</td><td>more than 200 characters</td><td class="txt">Notes must be 200 characters or fewer.</td></tr><tr><td class="m">form</td><td>any error (summary title)</td><td class="txt">Check the highlighted fields and try again.</td></tr><tr><td class="m">confirm</td><td>data tool without the tick</td><td class="txt">Tick the box to confirm.</td></tr></tbody></table></div>
+      <div class="block-title" style="margin-top:22px;font-size:17px">How both suites check a message: one step of scenario S11 in spec/scenarios.json</div>
+      <div class="code small-code">{<span class="s">"method"</span>: "POST", <span class="s">"path"</span>: "/expenses",
+ <span class="s">"form"</span>: {"date": "2026-11-25", "amount": "1.2345", "description": "xxx…(81)", ...},
+ <span class="s">"expect"</span>: {<span class="s">"status"</span>: 422, <span class="s">"contains"</span>: [
+   "&lt;p class="field-error" id="f-amount-error"&gt;…<span class="k">Amount can have at most 3 decimal places.</span>&lt;/p&gt;",
+   "&lt;p class="field-error" id="f-description-error"&gt;…<span class="k">Description must be 80 characters or fewer.</span>&lt;/p&gt;"]}}</div></div>
+    <div class="side-stack">
+      <div class="tbl"><table><thead><tr><th>Notice</th><th>Shown after the redirect</th></tr></thead><tbody><tr><td class="m">added</td><td class="txt">Expense added.</td></tr><tr><td class="m">updated</td><td class="txt">Expense updated.</td></tr><tr><td class="m">deleted</td><td class="txt">Expense deleted.</td></tr><tr><td class="m">reset</td><td class="txt">Sample data restored.</td></tr><tr><td class="m">cleared</td><td class="txt">All expenses deleted.</td></tr></tbody></table></div>
+      <div class="card rules"><h3>Data rules (FR-17)</h3><ul><li>Data lives in one JSON file. On first run it is created from seed.json, and every save is atomic (temporary file, then rename).</li><li>Amounts are stored as whole baisa (1 OMR = 1000 baisa) and never as floating point. They display as OMR 1,234.500.</li><li>Averages and percentages round half away from zero, using integer arithmetic only.</li><li>Dates are ISO 8601 (YYYY-MM-DD) and show as &quot;24 Nov 2026&quot;.</li></ul></div>
+      <div class="card rules"><h3>Categories, fixed order and colour</h3><div class="cats"><span><i style="background:#257de0"></i>Housing</span><span><i style="background:#f47230"></i>Groceries</span><span><i style="background:#00b894"></i>Dining</span><span><i style="background:#f2a600"></i>Transport</span><span><i style="background:#ee7fac"></i>Utilities</span><span><i style="background:#008a17"></i>Health</span><span><i style="background:#6a4ce2"></i>Leisure</span><span><i style="background:#8a8f98"></i>Other</span></div></div>
+    </div>
+  </div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>06 / 15</span></div>
+  <p class="kicker">Traceability</p>
+  <h2>Every requirement, in both codebases, under test</h2>
+  <p class="lede">Generated by <code>tools/trace.py</code> from the FR tags in the code and the test names. Unit tests run under the same name in both suites; every scenario runs in both suites.</p>
+  <div class="tbl"><table>
+    <thead><tr><th style="width:74px">FR</th><th style="width:270px">Requirement</th><th>Twin A · Python files</th><th>Twin B · JavaScript files</th><th style="width:74px">Unit</th><th style="width:118px">Scenarios</th><th style="width:118px">Result</th></tr></thead>
+    <tbody><tr><td class="id">FR-01</td><td>Shared layout and navigation</td><td class="m">routes.py · views.py · _bottom.html · _top.html</td><td class="m">routes.js · views.js · _bottom.ejs · _top.ejs</td><td class="m">1 unit</td><td class="m">S01, S20</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-02</td><td>Monthly headline figures</td><td class="m">queries.py · routes.py · views.py · overview.html</td><td class="m">queries.js · routes.js · views.js · overview.ejs</td><td class="m">1 unit</td><td class="m">S01, S02, S03</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-03</td><td>Spending by category</td><td class="m">queries.py · routes.py · views.py · overview.html</td><td class="m">queries.js · routes.js · views.js · overview.ejs</td><td class="m">–</td><td class="m">S04</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-04</td><td>Spending-through-the-month chart</td><td class="m">queries.py · routes.py · views.py · overview.html</td><td class="m">queries.js · routes.js · views.js · overview.ejs</td><td class="m">1 unit</td><td class="m">S05</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-05</td><td>Latest expenses</td><td class="m">queries.py · routes.py · views.py · overview.html</td><td class="m">queries.js · routes.js · views.js · overview.ejs</td><td class="m">–</td><td class="m">S03, S06</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-06</td><td>Expense list</td><td class="m">config.py · queries.py · routes.py · views.py · expenses.html</td><td class="m">config.js · queries.js · routes.js · views.js · expenses.ejs</td><td class="m">–</td><td class="m">S07, S10</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-07</td><td>Filter and search</td><td class="m">queries.py · routes.py · text.py · views.py · expenses.html</td><td class="m">queries.js · routes.js · text.js · views.js · expenses.ejs</td><td class="m">2 unit</td><td class="m">S08</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-08</td><td>Sorting</td><td class="m">config.py · queries.py · routes.py · views.py · expenses.html</td><td class="m">config.js · queries.js · routes.js · views.js · expenses.ejs</td><td class="m">1 unit</td><td class="m">S09, S10</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-09</td><td>Add an expense</td><td class="m">routes.py · views.py · form.html</td><td class="m">routes.js · views.js · form.ejs</td><td class="m">–</td><td class="m">S10, S16</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-10</td><td>Validation with exact messages</td><td class="m">config.py · money.py · routes.py · validation.py · views.py · form.html</td><td class="m">config.js · money.js · routes.js · validation.js · views.js · form.ejs</td><td class="m">4 unit</td><td class="m">S11, S12</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-11</td><td>Edit an expense</td><td class="m">routes.py · views.py · form.html</td><td class="m">routes.js · views.js · form.ejs</td><td class="m">–</td><td class="m">S12</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-12</td><td>Delete with confirmation</td><td class="m">routes.py · views.py · delete.html</td><td class="m">routes.js · views.js · delete.ejs</td><td class="m">–</td><td class="m">S13</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-13</td><td>Monthly report</td><td class="m">queries.py · routes.py · views.py · report.html</td><td class="m">queries.js · routes.js · views.js · report.ejs</td><td class="m">1 unit</td><td class="m">S14</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-14</td><td>CSV export</td><td class="m">exports.py · routes.py</td><td class="m">exports.js · routes.js</td><td class="m">1 unit</td><td class="m">S15, S16</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-15</td><td>Read-only JSON API</td><td class="m">exports.py · routes.py</td><td class="m">exports.js · routes.js</td><td class="m">1 unit</td><td class="m">S17</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-16</td><td>Data tools</td><td class="m">config.py · routes.py · store.py · views.py · data.html</td><td class="m">config.js · routes.js · store.js · views.js · data.ejs</td><td class="m">–</td><td class="m">S18</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-17</td><td>Storage and money rules</td><td class="m">config.py · dates.py · money.py · store.py</td><td class="m">config.js · dates.js · money.js · store.js</td><td class="m">7 unit</td><td class="m">S19</td><td><span class="ok">both pass</span></td></tr><tr><td class="id">FR-18</td><td>Errors, status codes and redirects</td><td class="m">routes.py · views.py · error.html</td><td class="m">app.js · routes.js · views.js · error.ejs</td><td class="m">1 unit</td><td class="m">S20</td><td><span class="ok">both pass</span></td></tr></tbody></table></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>07 / 15</span></div>
+  <p class="kicker">Screens side by side 1/5 · left: Twin A · right: Twin B</p>
+  <h2>Overview: headline figures, chart, categories</h2>
+  
+  <div class="pairs"><div><div class="pair-cap"><span class="n">01</span><b>Overview</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 35dea1d9e893 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/01-overview.html" scrolling="no" title="Twin A, Overview"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/01-overview.html" scrolling="no" title="Twin B, Overview"></iframe></div></div></div></div><div><div class="pair-cap"><span class="n">02</span><b>Overview, month without expenses</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 694b43e8d322 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/?month=2026-08</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/02-overview-empty-month.html" scrolling="no" title="Twin A, Overview, month without expenses"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/?month=2026-08</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/02-overview-empty-month.html" scrolling="no" title="Twin B, Overview, month without expenses"></iframe></div></div></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>08 / 15</span></div>
+  <p class="kicker">Screens side by side 2/5 · left: Twin A · right: Twin B</p>
+  <h2>Expense list: filter, search, sort, export</h2>
+  
+  <div class="pairs"><div><div class="pair-cap"><span class="n">03</span><b>Expense list</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 664dee21c1b3 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/expenses</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/03-expenses.html" scrolling="no" title="Twin A, Expense list"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/expenses</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/03-expenses.html" scrolling="no" title="Twin B, Expense list"></iframe></div></div></div></div><div><div class="pair-cap"><span class="n">04</span><b>List filtered by month and category</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 5454a9de3762 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/expenses?month=2026-11&amp;category=utilities</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/04-expenses-filtered.html" scrolling="no" title="Twin A, List filtered by month and category"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/expenses?month=2026-11&amp;category=utilities</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/04-expenses-filtered.html" scrolling="no" title="Twin B, List filtered by month and category"></iframe></div></div></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>09 / 15</span></div>
+  <p class="kicker">Screens side by side 3/5 · left: Twin A · right: Twin B</p>
+  <h2>Add expense: validation, then the saved result</h2>
+  
+  <div class="pairs"><div><div class="pair-cap"><span class="n">07</span><b>Add expense, validation errors</b><code>HTTP 422</code>
+    <span class="same">HTML sha256 5efb56c072e6 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001 · POST /expenses</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/07-add-validation.html" scrolling="no" title="Twin A, Add expense, validation errors"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002 · POST /expenses</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/07-add-validation.html" scrolling="no" title="Twin B, Add expense, validation errors"></iframe></div></div></div></div><div><div class="pair-cap"><span class="n">08</span><b>List after adding an expense</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 aff44310daa6 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/expenses?notice=added</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/08-added-notice.html" scrolling="no" title="Twin A, List after adding an expense"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/expenses?notice=added</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/08-added-notice.html" scrolling="no" title="Twin B, List after adding an expense"></iframe></div></div></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>10 / 15</span></div>
+  <p class="kicker">Screens side by side 4/5 · left: Twin A · right: Twin B</p>
+  <h2>Edit and delete with confirmation</h2>
+  
+  <div class="pairs"><div><div class="pair-cap"><span class="n">09</span><b>Edit expense</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 01d62692463b · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/expenses/30/edit</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/09-edit-form.html" scrolling="no" title="Twin A, Edit expense"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/expenses/30/edit</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/09-edit-form.html" scrolling="no" title="Twin B, Edit expense"></iframe></div></div></div></div><div><div class="pair-cap"><span class="n">10</span><b>Delete confirmation</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 68e357d1d76f · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/expenses/36/delete</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/10-delete-confirm.html" scrolling="no" title="Twin A, Delete confirmation"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/expenses/36/delete</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/10-delete-confirm.html" scrolling="no" title="Twin B, Delete confirmation"></iframe></div></div></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>11 / 15</span></div>
+  <p class="kicker">Screens side by side 5/5 · left: Twin A · right: Twin B</p>
+  <h2>Monthly report and data tools</h2>
+  
+  <div class="pairs"><div><div class="pair-cap"><span class="n">12</span><b>Monthly report</b><code>HTTP 200</code>
+    <span class="same">HTML sha256 a65a70375749 · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001/reports</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/12-report.html" scrolling="no" title="Twin A, Monthly report"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002/reports</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/12-report.html" scrolling="no" title="Twin B, Monthly report"></iframe></div></div></div></div><div><div class="pair-cap"><span class="n">14</span><b>Data tools, confirmation missing</b><code>HTTP 422</code>
+    <span class="same">HTML sha256 318d3075069d · 0 px different</span></div>
+    <div class="pair-row"><div class="frame"><div class="frame-bar"><span class="chip a">A</span><strong>Twin A</strong>Flask<code>127.0.0.1:5001 · POST /data/clear</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-a/14-data-confirm-error.html" scrolling="no" title="Twin A, Data tools, confirmation missing"></iframe></div></div><div class="frame"><div class="frame-bar"><span class="chip b">B</span><strong>Twin B</strong>Express<code>127.0.0.1:5002 · POST /data/clear</code></div>
+      <div class="frame-view"><iframe src="../demo/twin-b/14-data-confirm-error.html" scrolling="no" title="Twin B, Data tools, confirmation missing"></iframe></div></div></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>12 / 15</span></div>
+  <p class="kicker">Evidence</p>
+  <h2>Measured, not claimed</h2>
+  <p class="lede">Three independent checks, all in <code>tools/</code>: the parity check compares the running builds, the two suites test them, and Chrome compares the screens pixel by pixel.</p>
+  <div class="ev">
+    <div>
+      <div class="term-title">Parity check: both builds running, every response compared</div>
+      <div class="term"><span class="w">$ python3 tools/parity_check.py</span>
+Twin A: python run.py (port 62110)   Twin B: node server.js (port 62111)
+Builds that answered (X-Ledger-Build header): twin-a (Python/Flask), twin-b (Node/Express)
+
+1     crawl GET    /  200   16149 35dea1d9e893  <span class="g">identical</span>
+2     crawl GET    /static/favicon.svg  200   267 89dce27e10bd  <span class="g">identical</span>
+3     crawl GET    /static/app.css  200   21223 d1b48e1ff5c2  <span class="g">identical</span>
+4     crawl GET    /expenses  200   28815 664dee21c1b3  <span class="g">identical</span>
+141   S10  POST   /expenses  303       0 e3b0c44298fc  <span class="g">identical</span>
+142   S10  GET    /expenses?month=2026-11  200   15632 2b52703d1677  <span class="g">identical</span>
+143   S11  POST   /data/reset  303       0 e3b0c44298fc  <span class="g">identical</span>
+171   S14  POST   /data/reset  303       0 e3b0c44298fc  <span class="g">identical</span>
+172   S14  GET    /reports  200    8711 a65a70375749  <span class="g">identical</span>
+173   S14  GET    /reports?month=2026-09  200    8662 54ed4ee0ee4b  <span class="g">identical</span>
+217   S20  GET    /static/app.css  200   21223 d1b48e1ff5c2  <span class="g">identical</span>
+218   S20  GET    /static/missing.css  404    2950 51ab60b50e6c  <span class="g">identical</span>
+…
+
+Pages crawled: 110   Scenario steps replayed: 108
+<span class="g">Requests compared: 218   identical: 218   different: 0</span>
+<span class="g">Data files after the run (data/parity.json): byte-identical</span>
+<span class="g">Result: PASS, the twins are indistinguishable   (0.9 s)</span></div>
+    </div>
+    <div class="ev-right">
+      <div><div class="term-title"><span class="chip a">A</span>Twin A · pytest</div><div class="term"><span class="w">$ python -m pytest -v</span>
+test_rules.py::test_fr17_div_round_rounds_half_away_from_zero <span class="g">PASSED</span> [  2%]
+test_rules.py::test_fr17_amounts_format_with_three_decimals <span class="g">PASSED</span> [  4%]
+test_rules.py::test_fr17_dates_use_iso_and_short_month_names <span class="g">PASSED</span> [  7%]
+test_scenarios.py::test_scenario[S18_fr16] <span class="g">PASSED</span>                  [ 95%]
+test_scenarios.py::test_scenario[S19_fr17] <span class="g">PASSED</span>                  [ 97%]
+test_scenarios.py::test_scenario[S20_fr18_fr01] <span class="g">PASSED</span>             [100%]
+41 passed in 0.18s</div></div>
+      <div><div class="term-title"><span class="chip b">B</span>Twin B · node:test</div><div class="term"><span class="w">$ npm test</span>
+<span class="g">✔</span> FR-17 div round rounds half away from zero
+<span class="g">✔</span> FR-17 amounts format with three decimals
+<span class="g">✔</span> FR-17 dates use iso and short month names
+<span class="g">✔</span> S18 FR-16 Data tools: confirmation tick, delete all, restore sample data
+<span class="g">✔</span> S19 FR-17 Money rules: integer baisa, half-away-from-zero rounding, ISO dates
+<span class="g">✔</span> S20 FR-18 FR-01 Errors and redirects: 404, 405, strict paths
+ℹ pass 41   ℹ fail 0</div></div>
+    </div>
+  </div>
+  <div class="cmp"><div class="cmp-title">The same 15 screens captured from both builds in Chrome, compared pixel by pixel</div><div class="cells"><div class="cell"><span class="n">01</span><span class="t">Overview</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">02</span><span class="t">Overview, month without expenses</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">03</span><span class="t">Expense list</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">04</span><span class="t">List filtered by month and category</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">05</span><span class="t">Search with no results</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">06</span><span class="t">Add expense form</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">07</span><span class="t">Add expense, validation errors</span><span class="h">422</span><span class="ok">0 px</span></div><div class="cell"><span class="n">08</span><span class="t">List after adding an expense</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">09</span><span class="t">Edit expense</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">10</span><span class="t">Delete confirmation</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">11</span><span class="t">List after deleting</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">12</span><span class="t">Monthly report</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">13</span><span class="t">Data tools</span><span class="h">200</span><span class="ok">0 px</span></div><div class="cell"><span class="n">14</span><span class="t">Data tools, confirmation missing</span><span class="h">422</span><span class="ok">0 px</span></div><div class="cell"><span class="n">15</span><span class="t">404 page</span><span class="h">404</span><span class="ok">0 px</span></div></div></div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>13 / 15</span></div>
+  <p class="kicker">Setup, run and test</p>
+  <h2>Up and running in about two minutes</h2>
+  <p class="lede">Each build creates <code>data/ledger.json</code> from the sample data on first start. Data → Restore sample data starts a walkthrough from a known state.</p>
+  <div class="run2">
+    <div><div class="block-title"><span class="chip a">A</span>Twin A · Python + Flask<em>port 5001</em></div><div class="code"><span class="c"># Twin A needs Python 3.10+</span>
+cd twin-a-flask
+python3 -m venv .venv
+source .venv/bin/activate   <span class="c"># Windows: .venv\Scripts\activate</span>
+pip install -r requirements.txt
+<span class="k">python run.py</span>             <span class="c"># http://127.0.0.1:5001</span>
+<span class="k">python -m pytest -v</span>       <span class="c"># 41 passed</span></div><div class="tree"><b>twin-a-flask/</b>
+  run.py            <i>start on :5001</i>
+  requirements.txt  <i>Flask, pytest</i>
+  seed.json         <i>36 sample expenses</i>
+  <b>ledger/</b>           <i>app factory, routes, views,</i>
+                    <i>queries, money, dates, text,</i>
+                    <i>validation, exports, store</i>
+  <b>templates/</b>        <i>9 Jinja2 templates</i>
+  <b>static/</b>           <i>app.css, fonts, icon</i>
+  <b>tests/</b>            <i>rules + scenarios (41)</i></div></div>
+    <div><div class="block-title"><span class="chip b">B</span>Twin B · Node.js + Express<em>port 5002</em></div><div class="code"><span class="c"># Twin B needs Node.js 18.17+</span>
+cd twin-b-express
+npm install
+
+
+<span class="k">npm start</span>                 <span class="c"># http://127.0.0.1:5002</span>
+<span class="k">npm test</span>                  <span class="c"># 41 passed</span></div><div class="tree"><b>twin-b-express/</b>
+  server.js         <i>start on :5002</i>
+  package.json      <i>express, ejs</i>
+  seed.json         <i>36 sample expenses</i>
+  <b>src/</b>              <i>app factory, routes, views,</i>
+                    <i>queries, money, dates, text,</i>
+                    <i>validation, exports, store</i>
+  <b>views/</b>            <i>9 EJS templates</i>
+  <b>public/</b>           <i>app.css, fonts, icon</i>
+  <b>test/</b>             <i>rules + scenarios (41)</i></div></div>
+  </div>
+  <div class="run2" style="margin-top:22px">
+    <div class="tbl" style="margin-top:0"><table><thead><tr><th>Setting (both builds)</th><th>Default</th><th>Purpose</th></tr></thead><tbody>
+      <tr><td class="m">PORT</td><td class="m">5001 / 5002</td><td>Port to listen on</td></tr>
+      <tr><td class="m">LEDGER_DATA</td><td class="m">data/ledger.json</td><td>Data file; both builds read the same format</td></tr>
+      <tr><td class="m">LEDGER_TODAY</td><td class="m">today</td><td>Pins the date for tests and the parity check</td></tr>
+    </tbody></table></div>
+    <div><div class="code"><span class="c"># prove they are identical (from the project root)</span>
+<span class="k">python3 tools/parity_check.py</span> \
+    --python twin-a-flask/.venv/bin/python
+<span class="s">Result: PASS, the twins are indistinguishable</span></div></div>
+  </div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>14 / 15</span></div>
+  <p class="kicker">Clean, commented, mirrored</p>
+  <h2>Written twice, structured once</h2>
+  <p class="lede">Same module names, same function order, same comments. Each file says which file it mirrors in the other build, so a change in one is easy to find in the other.</p>
+  <div class="run2">
+    <div><div class="block-title"><span class="chip a">A</span>ledger/money.py<em>FR-10 · FR-17</em></div><div class="code small-code"><span class="k">def</span> div_round(numerator, denominator):
+    &quot;&quot;&quot;numerator / denominator rounded half away from zero. denominator must be  …
+    q = (2 * abs(numerator) + denominator) // (2 * denominator)
+    <span class="k">return</span> q if numerator &gt;= 0 else -q
+
+
+<span class="k">def</span> parse_amount(raw):
+    &quot;&quot;&quot;Parse user input into baisa. Returns (minor, None) or (None, message). Ru …
+    text = clean(raw).replace(&quot;,&quot;, &quot;&quot;)
+    <span class="k">if</span> text == &quot;&quot;:
+        <span class="k">return</span> None, MSG[&quot;amount_required&quot;]
+    <span class="k">if</span> not _AMOUNT_RE.fullmatch(text):
+        <span class="k">return</span> None, MSG[&quot;amount_format&quot;]
+    whole, _, frac = text.partition(&quot;.&quot;)
+    <span class="k">if</span> len(frac) &gt; 3:
+        <span class="k">return</span> None, MSG[&quot;amount_decimals&quot;]
+    whole = whole.lstrip(&quot;0&quot;) or &quot;0&quot;
+    frac = (frac + &quot;000&quot;)[:3]
+    <span class="k">if</span> whole == &quot;0&quot; and frac == &quot;000&quot;:
+        <span class="k">return</span> None, MSG[&quot;amount_zero&quot;]
+    <span class="k">if</span> len(whole) &gt; 6:  <span class="c"># anything over 999,999 OMR is over the limit; avoids hu …</span>
+        <span class="k">return</span> None, MSG[&quot;amount_max&quot;]
+    minor = int(whole) * 1000 + int(frac)
+    <span class="k">if</span> minor &gt; MAX_AMOUNT_MINOR:
+        <span class="k">return</span> None, MSG[&quot;amount_max&quot;]
+    <span class="k">return</span> minor, None</div></div>
+    <div><div class="block-title"><span class="chip b">B</span>src/money.js<em>FR-10 · FR-17</em></div><div class="code small-code">/** numerator / denominator rounded half away from zero. denominator must be &gt; 0 …
+<span class="k">function</span> divRound(numerator, denominator) {
+  <span class="k">const</span> n = BigInt(numerator);
+  <span class="k">const</span> d = BigInt(denominator);
+  <span class="k">const</span> q = (2n * (n &lt; 0n ? -n : n) + d) / (2n * d);
+  <span class="k">return</span> Number(n &gt;= 0n ? q : -q);
+}
+
+/** Parse user input into baisa. Returns [minor, null] or [null, message]. Rules …
+<span class="k">function</span> parseAmount(raw) {
+  <span class="k">const</span> text = clean(raw).split(&#x27;,&#x27;).join(&#x27;&#x27;);
+  <span class="k">if</span> (text === &#x27;&#x27;) return [null, MSG.amount_required];
+  <span class="k">if</span> (!AMOUNT_RE.test(text)) return [null, MSG.amount_format];
+  <span class="k">const</span> dot = text.indexOf(&#x27;.&#x27;);
+  let whole = dot === -1 ? text : text.slice(0, dot);
+  let frac = dot === -1 ? &#x27;&#x27; : text.slice(dot + 1);
+  <span class="k">if</span> (frac.length &gt; 3) return [null, MSG.amount_decimals];
+  whole = whole.replace(/^0+/, &#x27;&#x27;) || &#x27;0&#x27;;
+  frac = (frac + &#x27;000&#x27;).slice(0, 3);
+  <span class="k">if</span> (whole === &#x27;0&#x27; &amp;&amp; frac === &#x27;000&#x27;) return [null, MSG.amount_zero];
+  <span class="k">if</span> (whole.length &gt; 6) return [null, MSG.amount_max]; <span class="c">// anything over 999,999  …</span>
+  <span class="k">const</span> minor = Number(whole) * 1000 + Number(frac);
+  <span class="k">if</span> (minor &gt; MAX_AMOUNT_MINOR) return [null, MSG.amount_max];
+  <span class="k">return</span> [minor, null];
+}</div></div>
+  </div>
+  <div class="run2" style="margin-top:20px">
+    <div><div class="block-title"><span class="chip a">A</span>templates/form.html · Jinja2</div><div class="code small-code">&lt;div class=&quot;field{{ err_cls.amount }}&quot;&gt;
+  &lt;label for=&quot;f-amount&quot;&gt;Amount &lt;span class=&quot;hint&quot;&gt;Up to 3 decimals&lt;/span&gt;&lt;/label&gt;
+  &lt;div class=&quot;amount-wrap&quot;&gt;&lt;span&gt;OMR&lt;/span&gt;&lt;input class=&quot;input num&quot; id=&quot;f-amount …
+  {% if e.amount %}
+  &lt;p class=&quot;field-error&quot; id=&quot;f-amount-error&quot;&gt;&lt;svg viewBox=&quot;0 0 16 16&quot; fill=&quot;none …
+  {% endif %}
+&lt;/div&gt;</div></div>
+    <div><div class="block-title"><span class="chip b">B</span>views/form.ejs · EJS</div><div class="code small-code">&lt;div class=&quot;field&lt;%= err_cls.amount %&gt;&quot;&gt;
+  &lt;label for=&quot;f-amount&quot;&gt;Amount &lt;span class=&quot;hint&quot;&gt;Up to 3 decimals&lt;/span&gt;&lt;/label&gt;
+  &lt;div class=&quot;amount-wrap&quot;&gt;&lt;span&gt;OMR&lt;/span&gt;&lt;input class=&quot;input num&quot; id=&quot;f-amount …
+  &lt;%_ if (e.amount) { _%&gt;
+  &lt;p class=&quot;field-error&quot; id=&quot;f-amount-error&quot;&gt;&lt;svg viewBox=&quot;0 0 16 16&quot; fill=&quot;none …
+  &lt;%_ } _%&gt;
+&lt;/div&gt;</div></div>
+  </div>
+</section>
+<section class="page">
+  <div class="run"><span>Expense Ledger · <b>twin builds</b></span><span>15 / 15</span></div>
+  <p class="kicker">Walkthrough and handover</p>
+  <h2>What to click, and what you should see</h2>
+  
+  <div class="walk">
+    <div><div class="block-title">Walk both builds side by side: :5001 and :5002</div><ol class="steps"><li><div><b>Overview</b><p>November 2026: OMR 496.850 spent, 13 expenses, down 6.5% on October. The arrows change the month; August 2026 is empty.</p></div></li><li><div><b>Expenses</b><p>Filter November + Utilities (3 expenses, OMR 45.450), search “grocer”, try the four sort orders, export the CSV.</p></div></li><li><div><b>Add expense</b><p>Submit the empty form: four messages at once, HTTP 422. Then add a valid expense: “Expense added.”</p></div></li><li><div><b>Edit</b><p>Open entry #30, change the amount, save: “Expense updated.” The total moves by the difference.</p></div></li><li><div><b>Delete</b><p>Confirmation page, then “Expense deleted.” The next new expense gets a new number; #36 is never reused.</p></div></li><li><div><b>Reports</b><p>Every category against October, with the change in OMR and %, and the share of the month. Export the CSV.</p></div></li><li><div><b>Data</b><p>“Delete all expenses” without the tick shows “Tick the box to confirm.” Restore the sample data afterwards.</p></div></li></ol></div>
+    <div class="side-stack">
+      <div class="card hand"><h3>In the handover</h3><ul>
+        <li><b>twin-a-flask/</b> and <b>twin-b-express/</b>, each self-contained with its README, tests and sample data</li>
+        <li><b>docs/REQUIREMENTS.md</b>: requirements, every message and the traceability matrix</li>
+        <li><b>spec/</b>: requirements, scenarios and sample data as JSON, the shared source of truth</li>
+        <li><b>tools/</b>: parity check, screenshots, traceability, sync</li>
+        <li>this document as PDF, with ZIP files attached: each build on its own, and the whole delivery (open the PDF in Acrobat or Firefox to see the attachments)</li>
+      </ul></div>
+      <div class="card hand dark"><h3>Changes are part of the job</h3>
+        <p>Want a different app, a third stack (Django, Laravel, .NET, React Native) or more features? Each change is made in both builds and added to the spec, the scenarios and the parity check, so the twins stay identical.</p>
+        <p>The full source is in the repository linked in the entry description, ready to clone.</p></div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

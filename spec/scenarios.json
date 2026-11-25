@@ -1,0 +1,1361 @@
+{
+  "about": "Shared conformance fixture for both twins. Every scenario starts from a fresh copy of seed.json with today pinned to 2026-11-25. Twin A runs it in tests/test_scenarios.py, Twin B in test/scenarios.test.js. Source of truth: spec/scenarios.json (copied into each twin by tools/sync_shared.py).",
+  "today": "2026-11-25",
+  "expect_keys": {
+    "status": "HTTP status",
+    "location": "Location header (redirects)",
+    "content_type": "Content-Type header",
+    "disposition": "Content-Disposition header",
+    "contains": "each text must appear in the body",
+    "absent": "none of these may appear",
+    "in_order": "each text must appear, in this order",
+    "body": "the body must equal this text exactly",
+    "empty_body": "the body must be empty"
+  },
+  "scenarios": [
+    {
+      "id": "S01",
+      "fr": [
+        "FR-01",
+        "FR-02"
+      ],
+      "title": "Overview opens on the latest month with the four headline figures",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/",
+          "expect": {
+            "status": 200,
+            "content_type": "text/html; charset=utf-8",
+            "contains": [
+              "<title>Overview · Expense Ledger</title>",
+              "<a class=\"nav-link is-active\" href=\"/\" aria-current=\"page\">",
+              "<a class=\"nav-link\" href=\"/expenses\">",
+              "<h1>November 2026</h1>",
+              "<p class=\"kpi-value\"><small>OMR</small>496.850</p>",
+              "<span class=\"delta is-down\">↓ 6.5% vs October</span>",
+              "<p class=\"kpi-value\">13</p>",
+              "across 8 categories",
+              "<p class=\"kpi-value\"><small>OMR</small>19.874</p>",
+              "per day over 25 days so far",
+              "<p class=\"kpi-value\"><small>OMR</small>280.000</p>",
+              "Monthly rent · 1 Nov",
+              "<a href=\"/?month=2026-10\" aria-label=\"Previous month: October 2026\">",
+              "<a href=\"/?month=2026-12\" aria-label=\"Next month: December 2026\">",
+              "<footer class=\"foot\">Expense Ledger 1.0.0 · Amounts in Omani rial (OMR)</footer>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "fr": [
+        "FR-02"
+      ],
+      "title": "A past month: change against the month before and a full-month daily average",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/?month=2026-10",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h1>October 2026</h1>",
+              "<small>OMR</small>531.550",
+              "<span class=\"delta is-up\">↑ 3.7% vs September</span>",
+              "<small>OMR</small>17.147",
+              "per day over 31 days</p>",
+              "<p class=\"kpi-value\">11</p>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/?month=2026-09",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h1>September 2026</h1>",
+              "<span class=\"delta is-flat\">No spending in August</span>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/?month=2026-13",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h1>November 2026</h1>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "fr": [
+        "FR-02",
+        "FR-05"
+      ],
+      "title": "A month without expenses shows zeros and an Add expense button",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/?month=2026-08",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h1>August 2026</h1>",
+              "<small>OMR</small>0.000",
+              "No spending in July",
+              "No expenses this month",
+              "<h2>No expenses in August 2026.</h2>",
+              "<a class=\"btn btn-primary\" href=\"/expenses/new\">Add expense</a>"
+            ],
+            "absent": [
+              "<ul class=\"latest\">"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "fr": [
+        "FR-03"
+      ],
+      "title": "Spending by category: largest first, shares to one decimal",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/",
+          "expect": {
+            "status": 200,
+            "in_order": [
+              "<li class=\"cat-row cat-housing\">",
+              "<span class=\"cat-amt\">280.000</span>",
+              "<span class=\"cat-share\">56.4%</span>",
+              "<li class=\"cat-row cat-groceries\">",
+              "<span class=\"cat-amt\">105.750</span>",
+              "<span class=\"cat-share\">21.3%</span>",
+              "<li class=\"cat-row cat-utilities\">",
+              "<li class=\"cat-row cat-transport\">",
+              "<li class=\"cat-row cat-other\">",
+              "<li class=\"cat-row cat-leisure\">",
+              "<li class=\"cat-row cat-health\">",
+              "<li class=\"cat-row cat-dining\">",
+              "<span class=\"cat-share\">1.0%</span>"
+            ],
+            "contains": [
+              "<span class=\"cat-housing\" style=\"flex-grow: 280000\" title=\"Housing · 56.4%\"></span>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "fr": [
+        "FR-04"
+      ],
+      "title": "Running-total chart with round gridlines and per-day tooltips",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "aria-label=\"Running total of spending in November 2026 compared with October 2026\"",
+              "<span class=\"y-label\" style=\"top: 66.7%\">200</span>",
+              "<span class=\"y-label\" style=\"top: 0.0%\">600</span>",
+              "<title>1 Nov 2026 · OMR 280.000 · running total OMR 280.000</title>",
+              "<title>25 Nov 2026 · OMR 0.000 · running total OMR 496.850</title>",
+              "<span class=\"x-label\" style=\"left: 1.7%\">1 Nov</span>"
+            ],
+            "absent": [
+              "<title>26 Nov 2026"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "fr": [
+        "FR-05"
+      ],
+      "title": "Latest five expenses of the month, newest first",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/",
+          "expect": {
+            "status": 200,
+            "in_order": [
+              "<strong>Water bill</strong>",
+              "<strong>Football match tickets</strong>",
+              "<strong>Weekly groceries</strong>",
+              "<strong>Fuel</strong>",
+              "<strong>Coffee with colleagues</strong>"
+            ],
+            "contains": [
+              "<a href=\"/expenses?month=2026-11\">View all in November</a>"
+            ],
+            "absent": [
+              "<strong>Pharmacy</strong>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "fr": [
+        "FR-06"
+      ],
+      "title": "Expense list: count, total, rows newest first, text safely escaped",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<title>Expenses · Expense Ledger</title>",
+              "<p><strong>36 expenses</strong> · OMR 1,540.800</p>",
+              "Sorted by newest first",
+              "<span dir=\"auto\">Card reads &#34;Happy 30th!&#34;</span>",
+              "<span dir=\"auto\">فاتورة شهر أكتوبر</span>",
+              "<time datetime=\"2026-11-24\">24 Nov 2026</time>",
+              "<a class=\"row-act\" href=\"/expenses/36/edit\">"
+            ],
+            "in_order": [
+              "id=\"expense-36\"",
+              "id=\"expense-35\"",
+              "id=\"expense-34\"",
+              "id=\"expense-1\""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "fr": [
+        "FR-07"
+      ],
+      "title": "Filter by month and category, search text, bookmarkable URLs",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses?month=2026-11&category=utilities",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p><strong>3 expenses</strong> · OMR 45.450</p>",
+              "<option value=\"2026-11\" selected>November 2026</option>",
+              "<option value=\"utilities\" selected>Utilities</option>",
+              "href=\"/export/expenses.csv?month=2026-11&amp;category=utilities\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?q=GROCER",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p><strong>7 expenses</strong> · OMR 310.500</p>",
+              "value=\"GROCER\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?q=%D8%A3%D9%83%D8%AA%D9%88%D8%A8%D8%B1",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p><strong>1 expense</strong> · OMR 14.250</p>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?q=zzz",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h2>No expenses match these filters.</h2>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?month=2026-13&category=cars&sort=random",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p><strong>36 expenses</strong> · OMR 1,540.800</p>",
+              "<option value=\"all\" selected>All months</option>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "fr": [
+        "FR-08"
+      ],
+      "title": "Four sort orders with deterministic tie-breaks",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses?sort=amount_desc",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "Sorted by amount, high to low"
+            ],
+            "in_order": [
+              "id=\"expense-24\"",
+              "id=\"expense-13\"",
+              "id=\"expense-1\"",
+              "id=\"expense-34\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?sort=amount_asc",
+          "expect": {
+            "status": 200,
+            "in_order": [
+              "id=\"expense-12\"",
+              "id=\"expense-32\"",
+              "id=\"expense-36\"",
+              "id=\"expense-5\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?sort=date_asc",
+          "expect": {
+            "status": 200,
+            "in_order": [
+              "id=\"expense-1\"",
+              "id=\"expense-2\"",
+              "id=\"expense-3\""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "fr": [
+        "FR-09",
+        "FR-06",
+        "FR-08"
+      ],
+      "title": "Add an expense: 303 redirect, notice, trimmed text, new id",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses/new",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<title>Add expense · Expense Ledger</title>",
+              "name=\"date\" type=\"text\" inputmode=\"numeric\" autocomplete=\"off\" placeholder=\"YYYY-MM-DD\" value=\"2026-11-25\"",
+              "<option value=\"\" selected>Choose a category</option>",
+              "<a class=\"nav-link is-active\" href=\"/expenses/new\" aria-current=\"page\">"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "  Taxi to the souq  ",
+            "category": "transport",
+            "amount": "3.5",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303,
+            "location": "/expenses?notice=added",
+            "empty_body": true
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?notice=added",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "Expense added.</div>",
+              "<p><strong>37 expenses</strong>",
+              "<strong dir=\"auto\">Taxi to the souq</strong>"
+            ],
+            "in_order": [
+              "id=\"expense-37\"",
+              "<td class=\"col-amt\">3.500</td>",
+              "id=\"expense-36\""
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-24",
+            "description": "Bread",
+            "category": "groceries",
+            "amount": "0.4",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303,
+            "location": "/expenses?notice=added"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?month=2026-11",
+          "expect": {
+            "status": 200,
+            "in_order": [
+              "id=\"expense-37\"",
+              "id=\"expense-38\"",
+              "id=\"expense-36\""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "fr": [
+        "FR-10"
+      ],
+      "title": "Validation: HTTP 422, exact messages, values kept, nothing saved",
+      "steps": [
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "",
+            "description": "",
+            "category": "",
+            "amount": "",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<h2>Check the highlighted fields and try again.</h2>",
+              "<div class=\"field has-error\">"
+            ],
+            "in_order": [
+              "<li><a href=\"#f-date\">Enter the date of the expense.</a></li>",
+              "<li><a href=\"#f-amount\">Enter an amount.</a></li>",
+              "<li><a href=\"#f-description\">Enter a description.</a></li>",
+              "<li><a href=\"#f-category\">Choose a category.</a></li>"
+            ],
+            "absent": [
+              "#f-notes"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-02-29",
+            "description": "Test entry",
+            "category": "cars",
+            "amount": "abc",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-date-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Enter a real date in the format YYYY-MM-DD.</p>",
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount must be a number, like 12.500.</p>",
+              "<p class=\"field-error\" id=\"f-category-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Choose a category.</p>",
+              "value=\"2026-02-29\"",
+              "value=\"abc\""
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+            "category": "other",
+            "amount": "1.2345",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount can have at most 3 decimal places.</p>",
+              "<p class=\"field-error\" id=\"f-description-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Description must be 80 characters or fewer.</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "0.000",
+            "notes": "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount must be more than 0.000.</p>",
+              "<p class=\"field-error\" id=\"f-notes-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Notes must be 200 characters or fewer.</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "26-11-2026",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "100000.001",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount must be 100,000.000 or less.</p>",
+              "<p class=\"field-error\" id=\"f-date-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Enter a real date in the format YYYY-MM-DD.</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "-5",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount must be a number, like 12.500.</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "١٢",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Amount must be a number, like 12.500.</p>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p><strong>36 expenses</strong> · OMR 1,540.800</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2028-02-29",
+            "description": "بببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببببب",
+            "category": "other",
+            "amount": "1,250.5",
+            "notes": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+          },
+          "expect": {
+            "status": 303,
+            "location": "/expenses?notice=added"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?month=2028-02",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<td class=\"col-amt\">1,250.500</td>",
+              "<time datetime=\"2028-02-29\">29 Feb 2028</time>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "fr": [
+        "FR-11",
+        "FR-10"
+      ],
+      "title": "Edit an expense: saved values in the form, same validation, 404 for bad ids",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses/30/edit",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<title>Edit expense · Expense Ledger</title>",
+              "<p class=\"eyebrow\">Entry #30</p>",
+              "value=\"18.500\"",
+              "value=\"Birthday gift\"",
+              ">Card reads &#34;Happy 30th!&#34;</textarea>",
+              "<option value=\"other\" selected>Other</option>",
+              "action=\"/expenses/30\"",
+              "<a class=\"nav-link is-active\" href=\"/expenses\" aria-current=\"page\">"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/30",
+          "form": {
+            "date": "2026-11-12",
+            "description": "Birthday gift",
+            "category": "other",
+            "amount": "",
+            "notes": ""
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"f-amount-error\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"8\" cy=\"8\" r=\"6.2\"/><path d=\"M8 4.8v3.6M8 11h.01\"/></svg>Enter an amount.</p>",
+              "action=\"/expenses/30\"",
+              "<h1>Edit expense</h1>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/30",
+          "form": {
+            "date": "2026-11-12",
+            "description": "Birthday gift for Salim",
+            "category": "other",
+            "amount": "20",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303,
+            "location": "/expenses?notice=updated",
+            "empty_body": true
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?notice=updated",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "Expense updated.</div>",
+              "<strong dir=\"auto\">Birthday gift for Salim</strong>",
+              "<p><strong>36 expenses</strong> · OMR 1,542.300</p>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/999/edit",
+          "expect": {
+            "status": 404,
+            "contains": [
+              "<h1>Page not found</h1>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/05/edit",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/abc/edit",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/999",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "1.000",
+            "notes": ""
+          },
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "fr": [
+        "FR-12"
+      ],
+      "title": "Delete with a confirmation page; entry numbers are never reused",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/expenses/36/delete",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h2>Delete this expense?</h2>",
+              "This cannot be undone. Entry #36 will not be reused.",
+              "<dd>Water bill</dd>",
+              "<dd class=\"num\">OMR 6.200</dd>",
+              "action=\"/expenses/36/delete\"",
+              "<a class=\"btn btn-ghost\" href=\"/expenses\">Cancel</a>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/36/delete",
+          "expect": {
+            "status": 303,
+            "location": "/expenses?notice=deleted",
+            "empty_body": true
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses?notice=deleted",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "Expense deleted.</div>",
+              "<p><strong>35 expenses</strong>"
+            ],
+            "absent": [
+              "id=\"expense-36\""
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/36/delete",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/36/delete",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "1.000",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "id=\"expense-37\""
+            ],
+            "absent": [
+              "id=\"expense-36\""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S14",
+      "fr": [
+        "FR-13"
+      ],
+      "title": "Monthly report: every category, change and share, total row",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/reports",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<title>Reports · Expense Ledger</title>",
+              "<h1>November 2026</h1>",
+              "<th scope=\"col\" class=\"r-num\">Nov 2026</th>",
+              "<th scope=\"col\" class=\"r-num\">Oct 2026</th>",
+              "<span class=\"trend is-up\">↑ 20.0%</span>",
+              "<span class=\"trend is-flat\">0.0%</span>",
+              "<td class=\"r-num\">−34.700</td>",
+              "<span class=\"trend is-down\">↓ 6.5%</span>",
+              "<span class=\"num\">100.0%</span>",
+              "href=\"/export/report.csv?month=2026-11\""
+            ],
+            "in_order": [
+              "<tr class=\"cat-housing\">",
+              "<tr class=\"cat-groceries\">",
+              "<tr class=\"cat-dining\">",
+              "<tr class=\"cat-transport\">",
+              "<tr class=\"cat-utilities\">",
+              "<tr class=\"cat-health\">",
+              "<tr class=\"cat-leisure\">",
+              "<tr class=\"cat-other\">",
+              "<tfoot>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/reports?month=2026-09",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h1>September 2026</h1>",
+              "<span class=\"trend is-flat\">—</span>",
+              "Every category against August 2026."
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/reports?month=2026-08",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<tr class=\"cat-housing is-zero\">"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S15",
+      "fr": [
+        "FR-14"
+      ],
+      "title": "CSV exports: exact bytes, BOM, CRLF, file names",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/export/expenses.csv?month=2026-11&category=utilities",
+          "expect": {
+            "status": 200,
+            "content_type": "text/csv; charset=utf-8",
+            "disposition": "attachment; filename=\"expenses-2026-11.csv\"",
+            "body": "\ufeffID,Date,Description,Category,Amount (OMR),Notes\r\n36,2026-11-24,Water bill,Utilities,6.200,\r\n29,2026-11-10,Home internet (fibre),Utilities,25.000,\r\n27,2026-11-06,Electricity bill,Utilities,14.250,فاتورة شهر أكتوبر\r\n"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/report.csv?month=2026-11",
+          "expect": {
+            "status": 200,
+            "content_type": "text/csv; charset=utf-8",
+            "disposition": "attachment; filename=\"report-2026-11.csv\"",
+            "body": "\ufeffMonth,Category,This month (OMR),Previous month (OMR),Change (OMR),Change (%),Share (%)\r\n2026-11,Housing,280.000,280.000,0.000,0.0,56.4\r\n2026-11,Groceries,105.750,88.150,17.600,20.0,21.3\r\n2026-11,Dining,4.800,31.750,-26.950,-84.9,1.0\r\n2026-11,Transport,24.000,20.600,3.400,16.5,4.8\r\n2026-11,Utilities,45.450,41.400,4.050,9.8,9.1\r\n2026-11,Health,8.350,35.000,-26.650,-76.1,1.7\r\n2026-11,Leisure,10.000,20.000,-10.000,-50.0,2.0\r\n2026-11,Other,18.500,14.650,3.850,26.3,3.7\r\n2026-11,Total,496.850,531.550,-34.700,-6.5,100.0\r\n"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/report.csv?month=2026-09",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "2026-09,Housing,280.000,0.000,280.000,,54.6\r\n"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/expenses.csv",
+          "expect": {
+            "status": 200,
+            "disposition": "attachment; filename=\"expenses-all.csv\"",
+            "contains": [
+              "\ufeffID,Date,",
+              "1,2026-09-01,Monthly rent,Housing,280.000,\"Flat 12, Al Khuwair\"\r\n",
+              "30,2026-11-12,Birthday gift,Other,18.500,\"Card reads \"\"Happy 30th!\"\"\"\r\n"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S16",
+      "fr": [
+        "FR-14",
+        "FR-09"
+      ],
+      "title": "CSV is safe: formula guard, quotes, commas and line breaks",
+      "steps": [
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "=SUM(A1:A9)",
+            "category": "other",
+            "amount": "1",
+            "notes": "+cmd"
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Dinner, \"Al Angham\"",
+            "category": "dining",
+            "amount": "42",
+            "notes": "line one\r\nline two"
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/expenses.csv?month=2026-11&sort=date_asc&q=%20",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "24,2026-11-01,Monthly rent"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/expenses.csv?sort=date_asc&month=2026-11&category=other",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "37,2026-11-25,'=SUM(A1:A9),Other,1.000,'+cmd\r\n"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/export/expenses.csv?q=a&month=2026-11&sort=amount_asc&category=dining",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "38,2026-11-25,\"Dinner, \"\"Al Angham\"\"\",Dining,42.000,\"line one\r\nline two\"\r\n"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S17",
+      "fr": [
+        "FR-15"
+      ],
+      "title": "Read-only JSON API with amounts as text and as integer baisa",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/api/expenses?month=2026-11&category=utilities",
+          "expect": {
+            "status": 200,
+            "content_type": "application/json; charset=utf-8",
+            "body": "{\"currency\":\"OMR\",\"filters\":{\"month\":\"2026-11\",\"category\":\"utilities\",\"q\":\"\",\"sort\":\"date_desc\"},\"count\":3,\"total\":\"45.450\",\"total_minor\":45450,\"expenses\":[{\"id\":36,\"date\":\"2026-11-24\",\"description\":\"Water bill\",\"category\":\"utilities\",\"category_label\":\"Utilities\",\"amount\":\"6.200\",\"amount_minor\":6200,\"notes\":\"\"},{\"id\":29,\"date\":\"2026-11-10\",\"description\":\"Home internet (fibre)\",\"category\":\"utilities\",\"category_label\":\"Utilities\",\"amount\":\"25.000\",\"amount_minor\":25000,\"notes\":\"\"},{\"id\":27,\"date\":\"2026-11-06\",\"description\":\"Electricity bill\",\"category\":\"utilities\",\"category_label\":\"Utilities\",\"amount\":\"14.250\",\"amount_minor\":14250,\"notes\":\"فاتورة شهر أكتوبر\"}]}"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/summary?month=2026-10",
+          "expect": {
+            "status": 200,
+            "content_type": "application/json; charset=utf-8",
+            "contains": [
+              "{\"month\":\"2026-10\",\"label\":\"October 2026\",\"currency\":\"OMR\",\"total\":\"531.550\",\"total_minor\":531550,\"count\":11,\"days\":31,\"daily_average\":\"17.147\",\"daily_average_minor\":17147,",
+              "\"previous_month\":\"2026-09\",\"previous_total\":\"512.400\",\"previous_total_minor\":512400,\"change_pct\":\"3.7\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/summary?month=2026-08",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "\"largest\":null",
+              "\"change_pct\":null",
+              "\"categories\":[]"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S18",
+      "fr": [
+        "FR-16"
+      ],
+      "title": "Data tools: confirmation tick, delete all, restore sample data",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/data",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<title>Data · Expense Ledger</title>",
+              "<p class=\"kpi-value\">36 expenses</p>",
+              "<p class=\"kpi-value\">1 Sep 2026 – 24 Nov 2026</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/data/clear",
+          "form": {},
+          "expect": {
+            "status": 422,
+            "contains": [
+              "<p class=\"field-error\" id=\"clear-error\">",
+              "Tick the box to confirm.</p>"
+            ],
+            "absent": [
+              "id=\"reset-error\""
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/summary",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "\"count\":13"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/data/clear",
+          "form": {
+            "confirm": "yes"
+          },
+          "expect": {
+            "status": 303,
+            "location": "/data?notice=cleared",
+            "empty_body": true
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/data?notice=cleared",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "All expenses deleted.</div>",
+              "<p class=\"kpi-value\">0 expenses</p>",
+              "No expenses stored"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h2>No expenses yet.</h2>"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<h2>No expenses in November 2026.</h2>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "1.000",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "id=\"expense-37\"",
+              "<p><strong>1 expense</strong> · OMR 1.000</p>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/data/reset",
+          "form": {
+            "confirm": "no"
+          },
+          "expect": {
+            "status": 422,
+            "contains": [
+              "id=\"reset-error\""
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/data/reset",
+          "form": {
+            "confirm": "yes"
+          },
+          "expect": {
+            "status": 303,
+            "location": "/data?notice=reset"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/data?notice=reset",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "Sample data restored.</div>",
+              "<p class=\"kpi-value\">36 expenses</p>"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S19",
+      "fr": [
+        "FR-17"
+      ],
+      "title": "Money rules: integer baisa, half-away-from-zero rounding, ISO dates",
+      "steps": [
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2027-02-10",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "0.014",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/?month=2027-02",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "<p class=\"kpi-value\"><small>OMR</small>0.014</p>",
+              "<p class=\"kpi-value\"><small>OMR</small>0.001</p>",
+              "per day over 28 days</p>",
+              "Test entry · 10 Feb"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/expenses?month=2027-02",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "\"amount\":\"0.014\",\"amount_minor\":14"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses",
+          "form": {
+            "date": "2027-03-01",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "0.007",
+            "notes": ""
+          },
+          "expect": {
+            "status": 303
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/api/summary?month=2027-03",
+          "expect": {
+            "status": 200,
+            "contains": [
+              "\"daily_average\":\"0.000\",\"daily_average_minor\":0",
+              "\"change_pct\":\"-50.0\""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "S20",
+      "fr": [
+        "FR-18",
+        "FR-01"
+      ],
+      "title": "Errors and redirects: 404, 405, strict paths",
+      "steps": [
+        {
+          "method": "GET",
+          "path": "/nope",
+          "expect": {
+            "status": 404,
+            "content_type": "text/html; charset=utf-8",
+            "contains": [
+              "<title>Page not found · Expense Ledger</title>",
+              "<p class=\"error-code\">404</p>",
+              "<a class=\"nav-link\" href=\"/\">"
+            ]
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/Expenses",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/",
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/expenses/5",
+          "expect": {
+            "status": 405,
+            "contains": [
+              "<h1>Method not allowed</h1>"
+            ]
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/",
+          "form": {},
+          "expect": {
+            "status": 405
+          }
+        },
+        {
+          "method": "PUT",
+          "path": "/data",
+          "form": {},
+          "expect": {
+            "status": 405
+          }
+        },
+        {
+          "method": "POST",
+          "path": "/expenses/new",
+          "form": {
+            "date": "2026-11-25",
+            "description": "Test entry",
+            "category": "other",
+            "amount": "1.000",
+            "notes": ""
+          },
+          "expect": {
+            "status": 404
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/static/app.css",
+          "expect": {
+            "status": 200,
+            "content_type": "text/css; charset=utf-8"
+          }
+        },
+        {
+          "method": "GET",
+          "path": "/static/missing.css",
+          "expect": {
+            "status": 404
+          }
+        }
+      ]
+    }
+  ]
+}

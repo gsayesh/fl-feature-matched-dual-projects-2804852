@@ -1,0 +1,34 @@
+{% include "_top.html" %}
+{# FR-12: confirm before deleting; POST does the delete #}
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Entry #{{ id }}</p>
+          <h1>Delete expense</h1>
+        </div>
+      </header>
+      <section class="card confirm-card">
+        <div class="confirm-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 5.5h13M8 5.5V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1.5M5.2 5.5l.7 10.1a1.5 1.5 0 0 0 1.5 1.4h5.2a1.5 1.5 0 0 0 1.5-1.4l.7-10.1M8.5 9v4.5M11.5 9v4.5"/></svg></div>
+        <h2>Delete this expense?</h2>
+        <p>This cannot be undone. Entry #{{ id }} will not be reused.</p>
+        <dl class="facts">
+          <dt>Date</dt>
+          <dd>{{ date }}</dd>
+          <dt>Description</dt>
+          <dd>{{ description }}</dd>
+          <dt>Category</dt>
+          <dd><span class="chip cat-{{ key }}"><i class="dot"></i>{{ label }}</span></dd>
+          <dt>Amount</dt>
+          <dd class="num">{{ amount }}</dd>
+          {% if notes %}
+          <dt>Notes</dt>
+          <dd>{{ notes }}</dd>
+          {% endif %}
+        </dl>
+        <form method="post" action="{{ action }}">
+          <div class="form-actions">
+            <button class="btn btn-danger" type="submit">Delete expense</button>
+            <a class="btn btn-ghost" href="{{ cancel_href }}">Cancel</a>
+          </div>
+        </form>
+      </section>
+{% include "_bottom.html" %}

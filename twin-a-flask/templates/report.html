@@ -1,0 +1,55 @@
+{% include "_top.html" %}
+{# FR-13: monthly report, every category against the previous month #}
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Monthly report</p>
+          <h1>{{ month_label }}</h1>
+          <p class="lede">Every category against {{ prev_label }}.</p>
+        </div>
+        <div class="head-actions">
+          <nav class="month-switch" aria-label="Month">
+            <a href="{{ prev_href }}" aria-label="Previous month: {{ prev_label }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></a>
+            <span>{{ month_label }}</span>
+            <a href="{{ next_href }}" aria-label="Next month: {{ next_label }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></a>
+          </nav>
+          <a class="btn btn-ghost" href="{{ export_href }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7 8 10.2 11.2 7M3 13h10"/></svg>Export CSV</a>
+        </div>
+      </header>
+      <section class="card table-card">
+        <table class="table report">
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col" class="r-num">{{ cur_head }}</th>
+              <th scope="col" class="r-num">{{ prev_head }}</th>
+              <th scope="col" class="r-num">Change (OMR)</th>
+              <th scope="col" class="r-num">Change</th>
+              <th scope="col">Share of month</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in rows %}
+            <tr class="cat-{{ r.key }}{{ r.zero_cls }}">
+              <td><span class="cat-cell"><i class="dot"></i>{{ r.label }}</span></td>
+              <td class="r-num">{{ r.cur }}</td>
+              <td class="r-num">{{ r.prev }}</td>
+              <td class="r-num">{{ r.change }}</td>
+              <td class="r-num"><span class="trend{{ r.trend_cls }}">{{ r.trend }}</span></td>
+              <td><span class="share-bar"><span style="width: {{ r.share_w }}"></span></span><span class="num">{{ r.share }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>{{ total.label }}</td>
+              <td class="r-num">{{ total.cur }}</td>
+              <td class="r-num">{{ total.prev }}</td>
+              <td class="r-num">{{ total.change }}</td>
+              <td class="r-num"><span class="trend{{ total.trend_cls }}">{{ total.trend }}</span></td>
+              <td><span class="num">{{ total.share }}</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+      <p class="table-note">Change is this month minus {{ prev_label }}. A dash means there was no spending to compare with. Shares are rounded to one decimal.</p>
+{% include "_bottom.html" %}

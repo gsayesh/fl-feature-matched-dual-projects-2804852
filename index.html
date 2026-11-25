@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expense Ledger: twin builds (Python/Flask and Node/Express)</title>
+<meta name="description" content="One expense tracker built twice, in Python/Flask and Node.js/Express, with identical screens, workflows and outputs.">
+<link rel="icon" href="spec/assets/favicon.svg" type="image/svg+xml">
+<style>
+@font-face { font-family: "Geist"; src: url("spec/assets/fonts/geist-latin.woff2") format("woff2"); font-weight: 100 900; }
+@font-face { font-family: "Geist Mono"; src: url("spec/assets/fonts/geist-mono-latin.woff2") format("woff2"); font-weight: 100 900; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0e1013; color: #eef0f2; font: 400 15px/1.5 "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 28px; }
+header { padding: 44px 0 26px; background: radial-gradient(900px 420px at 50% 120%, rgba(13,107,83,0.35), rgba(13,107,83,0) 70%); }
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
+.eyebrow { font: 600 13px/1 "Geist Mono", monospace; letter-spacing: 0.16em; text-transform: uppercase; color: #5fd3a8; }
+h1 { margin-top: 14px; font-size: clamp(34px, 5vw, 58px); line-height: 1; font-weight: 650; letter-spacing: -0.045em; }
+h1 span { color: #8d939c; }
+.lede { margin-top: 14px; max-width: 640px; color: #aab0b8; font-size: 16px; }
+.stats { display: grid; grid-template-columns: repeat(4, auto); gap: 0 26px; }
+.stats div { padding-left: 14px; border-left: 2px solid #2a2e35; }
+.stats div:first-child { border-left-color: #5fd3a8; }
+.stats b { display: block; font: 600 24px/1 "Geist Mono", monospace; letter-spacing: -0.03em; }
+.stats span { display: block; margin-top: 6px; font-size: 12.5px; color: #8d939c; }
+.app { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; padding: 22px 0 40px; }
+.list { display: flex; flex-direction: column; gap: 2px; }
+.list p { margin: 4px 10px 10px; font: 600 11px/1 "Geist Mono", monospace; letter-spacing: 0.12em; text-transform: uppercase; color: #6f7680; }
+.list button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: none; color: #c3c8cf;
+  font: 500 14px/1.3 "Geist", sans-serif; text-align: left; cursor: pointer; }
+.list button:hover { background: #171a1f; color: #fff; }
+.list button.on { background: #1d2127; color: #fff; }
+.list button i { font: 600 11.5px "Geist Mono", monospace; font-style: normal; color: #5fd3a8; }
+.list button em { margin-left: auto; font: 500 11px "Geist Mono", monospace; font-style: normal; color: #6f7680; }
+.bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.modes { display: inline-flex; padding: 3px; border-radius: 11px; background: #171a1f; border: 1px solid #262a31; }
+.modes button { height: 32px; padding: 0 13px; border: 0; border-radius: 8px; background: none; color: #aab0b8; font: 600 13px "Geist", sans-serif; cursor: pointer; }
+.modes button.on { background: #2a2f37; color: #fff; }
+.hint { font-size: 13px; color: #8d939c; }
+.proof { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 999px;
+  background: rgba(95,211,168,0.12); color: #7fe0bb; font: 600 12.5px "Geist Mono", monospace; }
+.stage { position: relative; border-radius: 14px; overflow: hidden; background: #1a1d22; border: 1px solid #2a2e35; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; height: 40px; background: #1d2026; border-bottom: 1px solid #2c3037; font-size: 13.5px; }
+.tabs div { display: flex; align-items: center; gap: 9px; padding: 0 14px; color: #aab0b8; white-space: nowrap; overflow: hidden; }
+.tabs div + div { justify-content: flex-end; }
+.tabs strong { color: #fff; font-weight: 600; }
+.tabs code { font: 500 12px "Geist Mono", monospace; color: #8d939c; }
+.chip { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; font: 700 11px/1 "Geist Mono", monospace; color: #0e1013; flex: none; }
+.chip.a { background: #f2c14e; } .chip.b { background: #8bd17c; }
+.view { position: relative; overflow: hidden; background: #f3f2ee; }
+.view iframe { position: absolute; top: 0; width: 1440px; height: 1000px; border: 0; transform-origin: 0 0; background: #f3f2ee; }
+.seam { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #5fd3a8; box-shadow: 0 0 14px rgba(95,211,168,0.7); cursor: ew-resize; touch-action: none; }
+.seam::after { content: "= drag"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 7px 10px; border-radius: 999px;
+  background: #0e1013; border: 2px solid #5fd3a8; color: #fff; font: 600 12px "Geist Mono", monospace; white-space: nowrap; }
+.side .seam { display: none; }
+.meta { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; font: 500 12.5px "Geist Mono", monospace; color: #8d939c; }
+.meta b { color: #eef0f2; font-weight: 600; }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+.links a { display: inline-flex; align-items: center; height: 38px; padding: 0 15px; border-radius: 10px; border: 1px solid #2a2e35; background: #15181c; text-decoration: none; font-weight: 600; font-size: 14px; }
+.links a:hover { border-color: #5fd3a8; }
+.links a.primary { background: #0d6b53; border-color: #0d6b53; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; transition: .2s; padding: 12px 16px; border-radius: 12px;
+  background: #1d2127; border: 1px solid #2f343c; color: #fff; font-size: 14px; pointer-events: none; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+footer { padding: 26px 0 40px; border-top: 1px solid #1f2329; color: #6f7680; font-size: 13px; }
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; } .list { flex-direction: row; flex-wrap: wrap; } .list p { width: 100%; } .list button { width: auto; } .stats { grid-template-columns: repeat(2, auto); gap: 14px 22px; } }
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+  <div>
+    <p class="eyebrow">Expense Ledger · twin builds</p>
+    <h1>Same app. <span>Two codebases.</span></h1>
+    <p class="lede">One household expense tracker, built twice: in Python with Flask and in Node.js with Express. These are the real pages each build served, captured after the same clicks. Drag the seam: the left of it is Twin A, the right is Twin B.</p>
+  </div>
+  <div class="stats">
+    <div><b>218/218</b><span>responses identical</span></div>
+    <div><b>15/15</b><span>screens pixel-identical</span></div>
+    <div><b>82/82</b><span>tests passing</span></div>
+    <div><b>18/18</b><span>requirements traced</span></div>
+  </div>
+</div></header>
+<main class="wrap app">
+  <nav class="list" id="list" aria-label="Screens"><p>Screens and states</p></nav>
+  <section>
+    <div class="bar">
+      <div class="modes" role="tablist">
+        <button data-mode="split" class="on">Split</button><button data-mode="side">Side by side</button><button data-mode="a">Twin A only</button><button data-mode="b">Twin B only</button>
+      </div>
+      <span class="hint" id="hint">Drag the green seam left and right.</span>
+      <span class="proof" id="proof"></span>
+    </div>
+    <div class="stage" id="stage">
+      <div class="tabs"><div><span class="chip a">A</span><strong>Twin A</strong>Python · Flask<code>127.0.0.1:5001</code></div><div><code>127.0.0.1:5002</code>Node.js · Express<strong>Twin B</strong><span class="chip b">B</span></div></div>
+      <div class="view" id="view">
+        <iframe id="fa" title="Twin A" scrolling="no"></iframe>
+        <iframe id="fb" title="Twin B" scrolling="no"></iframe>
+        <div class="seam" id="seam" role="slider" aria-label="Seam between Twin A and Twin B" tabindex="0"></div>
+      </div>
+    </div>
+    <div class="meta" id="meta"></div>
+    <div class="links" id="links">
+      <a class="primary" href="docs/expense-ledger-twins.pdf">Requirements document (PDF)</a>
+      <a data-repo="docs/REQUIREMENTS.md" href="docs/REQUIREMENTS.md">REQUIREMENTS.md</a>
+      <a data-repo="README.md" href="README.md">README: run both in 2 minutes</a>
+      <a data-repo="twin-a-flask" href="twin-a-flask/">Twin A source</a>
+      <a data-repo="twin-b-express" href="twin-b-express/">Twin B source</a>
+      <a data-repo="docs/parity-report.txt" href="docs/parity-report.txt">Parity report</a>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">This page is a static preview. The forms need a running build: clone the repository and start both twins (one command each) to walk every flow.</div></footer>
+<div class="toast" id="toast">Static preview: run the twins locally to submit forms.</div>
+<script>
+const STATES = [{"state": "01-overview", "title": "Overview", "status": 200, "sha": "35dea1d9e893304e", "shab": "35dea1d9e893304e", "px": 0}, {"state": "02-overview-empty-month", "title": "Overview, month without expenses", "status": 200, "sha": "694b43e8d32260c2", "shab": "694b43e8d32260c2", "px": 0}, {"state": "03-expenses", "title": "Expense list", "status": 200, "sha": "664dee21c1b3e18d", "shab": "664dee21c1b3e18d", "px": 0}, {"state": "04-expenses-filtered", "title": "List filtered by month and category", "status": 200, "sha": "5454a9de376208d8", "shab": "5454a9de376208d8", "px": 0}, {"state": "05-expenses-no-match", "title": "Search with no results", "status": 200, "sha": "7c04806f2b4f97bd", "shab": "7c04806f2b4f97bd", "px": 0}, {"state": "06-add-form", "title": "Add expense form", "status": 200, "sha": "297b9731b7938e5b", "shab": "297b9731b7938e5b", "px": 0}, {"state": "07-add-validation", "title": "Add expense, validation errors", "status": 422, "sha": "5efb56c072e683b2", "shab": "5efb56c072e683b2", "px": 0}, {"state": "08-added-notice", "title": "List after adding an expense", "status": 200, "sha": "aff44310daa640c2", "shab": "aff44310daa640c2", "px": 0}, {"state": "09-edit-form", "title": "Edit expense", "status": 200, "sha": "01d62692463bab77", "shab": "01d62692463bab77", "px": 0}, {"state": "10-delete-confirm", "title": "Delete confirmation", "status": 200, "sha": "68e357d1d76f17a7", "shab": "68e357d1d76f17a7", "px": 0}, {"state": "11-deleted-notice", "title": "List after deleting", "status": 200, "sha": "4cea9023c3ee6c1c", "shab": "4cea9023c3ee6c1c", "px": 0}, {"state": "12-report", "title": "Monthly report", "status": 200, "sha": "a65a7037574999ff", "shab": "a65a7037574999ff", "px": 0}, {"state": "13-data-tools", "title": "Data tools", "status": 200, "sha": "5067cf768e7a250d", "shab": "5067cf768e7a250d", "px": 0}, {"state": "14-data-confirm-error", "title": "Data tools, confirmation missing", "status": 422, "sha": "318d3075069db63f", "shab": "318d3075069db63f", "px": 0}, {"state": "15-not-found", "title": "404 page", "status": 404, "sha": "51ab60b50e6c0441", "shab": "51ab60b50e6c0441", "px": 0}];
+const fa = document.getElementById('fa'), fb = document.getElementById('fb'), view = document.getElementById('view');
+const seam = document.getElementById('seam'), stage = document.getElementById('stage');
+let current = STATES[0].state, mode = 'split', cut = 0.5;
+
+// Links go to the GitHub repository when the page is served from GitHub Pages.
+const host = location.hostname.match(/^([^.]+)\.github\.io$/);
+if (host) {
+  const repo = location.pathname.split('/').filter(Boolean)[0];
+  const base = 'https://github.com/' + host[1] + '/' + repo;
+  document.querySelectorAll('[data-repo]').forEach(a => {
+    const p = a.dataset.repo; a.href = base + (p.includes('.') ? '/blob/main/' : '/tree/main/') + p;
+  });
+}
+
+const list = document.getElementById('list');
+STATES.forEach(s => {
+  const b = document.createElement('button');
+  b.innerHTML = '<i>' + s.state.slice(0, 2) + '</i>' + s.title + '<em>' + s.status + '</em>';
+  b.onclick = () => show(s.state);
+  b.dataset.state = s.state;
+  list.appendChild(b);
+});
+
+function show(state) {
+  current = state;
+  const s = STATES.find(x => x.state === state);
+  [...list.querySelectorAll('button')].forEach(b => b.classList.toggle('on', b.dataset.state === state));
+  const a = 'demo/twin-a/' + state + '.html', b = 'demo/twin-b/' + state + '.html';
+  if (!fa.src.endsWith(a)) fa.src = a;
+  if (!fb.src.endsWith(b)) fb.src = b;
+  document.getElementById('proof').textContent = s.px === 0 && s.sha === s.shab ? '= identical · 0 px different' : 'different';
+  document.getElementById('meta').innerHTML = '<span>HTTP <b>' + s.status + '</b></span><span>Twin A HTML sha256 <b>' + s.sha + '…</b></span><span>Twin B HTML sha256 <b>' + s.shab + '…</b></span>';
+}
+
+function layout() {
+  const w = view.clientWidth || stage.clientWidth;
+  if (mode === 'side') {
+    const half = (w - 12) / 2, sc = half / 1440;
+    view.style.height = (1000 * sc) + 'px';
+    fa.style.cssText = 'left:0;transform:scale(' + sc + ');clip-path:none;display:block';
+    fb.style.cssText = 'left:' + (half + 12) + 'px;transform:scale(' + sc + ');clip-path:none;display:block';
+    view.style.background = '#1a1d22';
+  } else {
+    const sc = w / 1440, u = Math.round(1440 * cut);
+    view.style.height = (1000 * sc) + 'px';
+    view.style.background = '#f3f2ee';
+    fa.style.cssText = 'left:0;transform:scale(' + sc + ');display:' + (mode === 'b' ? 'none' : 'block') + ';clip-path:' + (mode === 'split' ? 'inset(0 ' + (1440 - u) + 'px 0 0)' : 'none');
+    fb.style.cssText = 'left:0;transform:scale(' + sc + ');display:' + (mode === 'a' ? 'none' : 'block') + ';clip-path:' + (mode === 'split' ? 'inset(0 0 0 ' + u + 'px)' : 'none');
+    seam.style.left = (w * cut) + 'px';
+  }
+  seam.style.display = mode === 'split' ? 'block' : 'none';
+  stage.classList.toggle('side', mode === 'side');
+}
+
+document.querySelectorAll('.modes button').forEach(b => b.onclick = () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll('.modes button').forEach(x => x.classList.toggle('on', x === b));
+  document.getElementById('hint').textContent = mode === 'split' ? 'Drag the green seam left and right.' : mode === 'side' ? 'Both builds, same state, side by side.' : 'One build at a time: switch to compare.';
+  layout();
+});
+
+let dragging = false;
+seam.addEventListener('pointerdown', e => { dragging = true; seam.setPointerCapture(e.pointerId); });
+seam.addEventListener('pointerup', () => { dragging = false; });
+seam.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const r = view.getBoundingClientRect();
+  cut = Math.min(0.98, Math.max(0.02, (e.clientX - r.left) / r.width));
+  layout();
+});
+seam.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') cut = Math.max(0.02, cut - 0.02);
+  if (e.key === 'ArrowRight') cut = Math.min(0.98, cut + 0.02);
+  layout();
+});
+
+// Keep both frames on the same screen, and explain why forms do nothing here.
+function wire(frame, other, key) {
+  frame.addEventListener('load', () => {
+    let doc;
+    try { doc = frame.contentDocument; } catch (e) { return; }
+    if (!doc) return;
+    const name = (frame.contentWindow.location.pathname.split('/').pop() || '').replace('.html', '');
+    if (name && name !== current && STATES.some(s => s.state === name)) show(name);
+    const toast = document.getElementById('toast');
+    const say = () => { toast.classList.add('on'); clearTimeout(window.__t); window.__t = setTimeout(() => toast.classList.remove('on'), 2200); };
+    doc.addEventListener('submit', e => { e.preventDefault(); say(); }, true);
+    doc.addEventListener('click', e => { const a = e.target.closest('a'); if (a && a.getAttribute('href') === '#') { e.preventDefault(); say(); } }, true);
+  });
+}
+wire(fa, fb, 'a'); wire(fb, fa, 'b');
+window.addEventListener('resize', layout);
+show(current); layout();
+</script>
+</body>
+</html>

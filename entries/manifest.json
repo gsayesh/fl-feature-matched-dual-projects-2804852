@@ -1,0 +1,16 @@
+{
+  "entries": [
+    {
+      "html": "entry-1.html",
+      "width": 1600,
+      "height": 1200,
+      "scale": 2,
+      "detail": "entry-1-detail.html",
+      "detail_width": 1600,
+      "detail_height": 2000,
+      "title": "Twin builds: Flask + Express, byte-identical",
+      "description": "Expense Ledger, built twice: Twin A in Python/Flask and Twin B in Node.js/Express show the same screens, workflows and outputs, proved by a parity check (218/218 responses byte-identical), 15/15 pixel-identical screens and 82 passing tests, with all 18 requirements traced to both codebases; deep ink, ledger green and mint, set in Geist and Geist Mono. On award you receive both runnable projects with commented source, a README each (setup, dependencies, tests), the requirements write-up with traceability matrix (PDF and Markdown), the shared spec and test scenarios, the parity and screenshot tools, and PNG/PDF previews; the attached PDF is the full 15-page document. Unlimited revisions: any change (colour, font, layout, text) delivered within a few hours, rate or comment and I will revise.\nLive demo: {{LIVE_URL}}\nSource code: {{REPO_URL}}",
+      "pdf": true
+    }
+  ]
+}

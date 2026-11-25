@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data · Expense Ledger</title>
+<link rel="icon" href="../static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../static/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="01-overview.html">
+      <svg class="brand-mark" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="#0d6b53"/><path d="M10 12.5h16M10 18h10M10 23.5h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="25" cy="18" r="1.9" fill="#5fd3a8"/></svg>
+      <span class="brand-text"><strong>Expense Ledger</strong><small>Household spending</small></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <p class="nav-label">Menu</p>
+      <a class="nav-link" href="01-overview.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1.6"/><rect x="11" y="3" width="6" height="6" rx="1.6"/><rect x="3" y="11" width="6" height="6" rx="1.6"/><rect x="11" y="11" width="6" height="6" rx="1.6"/></svg>Overview</a>
+      <a class="nav-link" href="03-expenses.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M7.5 5.5h9M7.5 10h9M7.5 14.5h9"/><circle cx="4" cy="5.5" r=".9" fill="currentColor"/><circle cx="4" cy="10" r=".9" fill="currentColor"/><circle cx="4" cy="14.5" r=".9" fill="currentColor"/></svg>Expenses</a>
+      <a class="nav-link" href="06-add-form.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 6.8v6.4M6.8 10h6.4"/></svg>Add expense</a>
+      <a class="nav-link" href="12-report.html"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 16.5h13M6 13.5V9M10 13.5V4.5M14 13.5V7.5"/></svg>Reports</a>
+      <a class="nav-link is-active" href="13-data-tools.html" aria-current="page"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="10" cy="5" rx="6" ry="2.3"/><path d="M4 5v10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3V5M4 10c0 1.3 2.7 2.3 6 2.3s6-1 6-2.3"/></svg>Data</a>
+    </nav>
+    <div class="side-foot">
+      <strong>Omani rial · OMR</strong>
+      1 OMR = 1,000 baisa
+    </div>
+  </aside>
+  <main class="main">
+    <div class="page">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Data</p>
+          <h1>Data tools</h1>
+          <p class="lede">All expenses live in one JSON file. Both builds read and write exactly the same format.</p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn-ghost" href="#"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7 8 10.2 11.2 7M3 13h10"/></svg>Export all as CSV</a>
+        </div>
+      </header>
+      <section class="stats" aria-label="Stored data">
+        <div class="card stat">
+          <p class="kpi-label">Stored</p>
+          <p class="kpi-value">36 expenses</p>
+        </div>
+        <div class="card stat">
+          <p class="kpi-label">Date range</p>
+          <p class="kpi-value">1 Sep 2026 – 24 Nov 2026</p>
+        </div>
+        <div class="card stat">
+          <p class="kpi-label">Data file</p>
+          <p class="kpi-value">data/ledger.json</p>
+        </div>
+      </section>
+      <div class="tools">
+        <form class="card tool" method="post" action="#">
+          <h2>Restore sample data</h2>
+          <p>Replaces every expense with the 36 sample expenses from September to November 2026. Use it to start a walkthrough from a known state.</p>
+          <label class="tick"><input type="checkbox" name="confirm" value="yes">I understand this replaces all current expenses.</label>
+          <button class="btn btn-primary" type="submit">Restore sample data</button>
+        </form>
+        <form class="card tool is-danger" method="post" action="#">
+          <h2>Delete all expenses</h2>
+          <p>Removes every expense. Entry numbers keep counting, so a deleted number is never handed out again.</p>
+          <label class="tick"><input type="checkbox" name="confirm" value="yes" aria-invalid="true" aria-describedby="clear-error">I understand this deletes every expense.</label>
+          <p class="field-error" id="clear-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg>Tick the box to confirm.</p>
+          <button class="btn btn-danger" type="submit">Delete all expenses</button>
+        </form>
+      </div>
+    </div>
+    <footer class="foot">Expense Ledger 1.0.0 · Amounts in Omani rial (OMR)</footer>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+[
+  {
+    "state": "01-overview",
+    "title": "Overview",
+    "status": 200,
+    "sha256": "35dea1d9e893304edde1b00b5e0e7d35a76775c841dbf432ac840319fc5405dc",
+    "sha256_b": "35dea1d9e893304edde1b00b5e0e7d35a76775c841dbf432ac840319fc5405dc",
+    "pixels_different": 0
+  },
+  {
+    "state": "02-overview-empty-month",
+    "title": "Overview, month without expenses",
+    "status": 200,
+    "sha256": "694b43e8d32260c2d76ed8e9ef77342bc034f0e3f700624eb09fc4dea42e36d8",
+    "sha256_b": "694b43e8d32260c2d76ed8e9ef77342bc034f0e3f700624eb09fc4dea42e36d8",
+    "pixels_different": 0
+  },
+  {
+    "state": "03-expenses",
+    "title": "Expense list",
+    "status": 200,
+    "sha256": "664dee21c1b3e18da03fbf540dc09743508cc1751ad2b5129161762b209dbea0",
+    "sha256_b": "664dee21c1b3e18da03fbf540dc09743508cc1751ad2b5129161762b209dbea0",
+    "pixels_different": 0
+  },
+  {
+    "state": "04-expenses-filtered",
+    "title": "List filtered by month and category",
+    "status": 200,
+    "sha256": "5454a9de376208d8ebd4ce4b8b363294186cb8f68710d5083091d80f70336937",
+    "sha256_b": "5454a9de376208d8ebd4ce4b8b363294186cb8f68710d5083091d80f70336937",
+    "pixels_different": 0
+  },
+  {
+    "state": "05-expenses-no-match",
+    "title": "Search with no results",
+    "status": 200,
+    "sha256": "7c04806f2b4f97bdbe2243697cb700b934782ecfec15dcad6221a43da1b9bde7",
+    "sha256_b": "7c04806f2b4f97bdbe2243697cb700b934782ecfec15dcad6221a43da1b9bde7",
+    "pixels_different": 0
+  },
+  {
+    "state": "06-add-form",
+    "title": "Add expense form",
+    "status": 200,
+    "sha256": "297b9731b7938e5bb3bea97ec903d0b0506eaedcec333fcb9b87509b7358b029",
+    "sha256_b": "297b9731b7938e5bb3bea97ec903d0b0506eaedcec333fcb9b87509b7358b029",
+    "pixels_different": 0
+  },
+  {
+    "state": "07-add-validation",
+    "title": "Add expense, validation errors",
+    "status": 422,
+    "sha256": "5efb56c072e683b26dc0f6ddcd9b0b2a98c66ef058de778362e4106f9ce92139",
+    "sha256_b": "5efb56c072e683b26dc0f6ddcd9b0b2a98c66ef058de778362e4106f9ce92139",
+    "pixels_different": 0
+  },
+  {
+    "state": "08-added-notice",
+    "title": "List after adding an expense",
+    "status": 200,
+    "sha256": "aff44310daa640c23d9d3ec7f243a52d5c1ec10ce9f49361f73798e56cc8523f",
+    "sha256_b": "aff44310daa640c23d9d3ec7f243a52d5c1ec10ce9f49361f73798e56cc8523f",
+    "pixels_different": 0
+  },
+  {
+    "state": "09-edit-form",
+    "title": "Edit expense",
+    "status": 200,
+    "sha256": "01d62692463bab772a4f6cda08e496887728a521d987a7c2bdd18d98409f0836",
+    "sha256_b": "01d62692463bab772a4f6cda08e496887728a521d987a7c2bdd18d98409f0836",
+    "pixels_different": 0
+  },
+  {
+    "state": "10-delete-confirm",
+    "title": "Delete confirmation",
+    "status": 200,
+    "sha256": "68e357d1d76f17a745be2d74cc1cf7c295a2544227c99282883dfa34b5a04b31",
+    "sha256_b": "68e357d1d76f17a745be2d74cc1cf7c295a2544227c99282883dfa34b5a04b31",
+    "pixels_different": 0
+  },
+  {
+    "state": "11-deleted-notice",
+    "title": "List after deleting",
+    "status": 200,
+    "sha256": "4cea9023c3ee6c1c3b0ea5839ec15d5f4e09d82b75477acec2efdc7b2ef18293",
+    "sha256_b": "4cea9023c3ee6c1c3b0ea5839ec15d5f4e09d82b75477acec2efdc7b2ef18293",
+    "pixels_different": 0
+  },
+  {
+    "state": "12-report",
+    "title": "Monthly report",
+    "status": 200,
+    "sha256": "a65a7037574999ffa566595dc4229a7b2dd4d3cbf35390db215c93e57fa075f7",
+    "sha256_b": "a65a7037574999ffa566595dc4229a7b2dd4d3cbf35390db215c93e57fa075f7",
+    "pixels_different": 0
+  },
+  {
+    "state": "13-data-tools",
+    "title": "Data tools",
+    "status": 200,
+    "sha256": "5067cf768e7a250d055e6383a4e6df394a3527d61e92e0541c1d275a3261438e",
+    "sha256_b": "5067cf768e7a250d055e6383a4e6df394a3527d61e92e0541c1d275a3261438e",
+    "pixels_different": 0
+  },
+  {
+    "state": "14-data-confirm-error",
+    "title": "Data tools, confirmation missing",
+    "status": 422,
+    "sha256": "318d3075069db63f294ee159d40deaac8076469bba4ee67e99a2ad871969bca0",
+    "sha256_b": "318d3075069db63f294ee159d40deaac8076469bba4ee67e99a2ad871969bca0",
+    "pixels_different": 0
+  },
+  {
+    "state": "15-not-found",
+    "title": "404 page",
+    "status": 404,
+    "sha256": "51ab60b50e6c0441192f72eb86ba63840ac49582f95e122ab81e40cb13ff012f",
+    "sha256_b": "51ab60b50e6c0441192f72eb86ba63840ac49582f95e122ab81e40cb13ff012f",
+    "pixels_different": 0
+  }
+]

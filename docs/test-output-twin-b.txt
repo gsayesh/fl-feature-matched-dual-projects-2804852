@@ -1,0 +1,50 @@
+$ npm test
+✔ FR-17 div round rounds half away from zero (0.393625ms)
+✔ FR-17 amounts format with three decimals (0.134459ms)
+✔ FR-17 dates use iso and short month names (0.084458ms)
+✔ FR-17 leap years and month lengths (0.268333ms)
+✔ FR-17 shift month wraps years (0.112084ms)
+✔ FR-10 amount parsing accepts plain numbers (0.115458ms)
+✔ FR-10 amount parsing rejects bad input in rule order (0.191167ms)
+✔ FR-10 text limits count characters not bytes (0.166375ms)
+✔ FR-10 validation trims ascii whitespace only (0.245166ms)
+✔ FR-07 search ignores case and matches notes (0.295875ms)
+✔ FR-07 query strings are encoded the same way (0.179ms)
+✔ FR-08 sort ties break on entry number (0.074166ms)
+✔ FR-02 month summary matches hand calculation (0.200083ms)
+✔ FR-04 axis steps are 1 2 or 5 times a power of ten (0.041542ms)
+✔ FR-13 report change is empty without previous spending (0.151333ms)
+✔ FR-14 csv cells guard formulas and quote specials (0.057542ms)
+✔ FR-15 json is compact with stable key order (0.064666ms)
+✔ FR-17 store creates file from seed and never reuses ids (2.245584ms)
+✔ FR-17 store file format is stable (0.516125ms)
+✔ FR-01 every screen shares the shell (31.289208ms)
+✔ FR-18 unknown method returns 405 page (4.51875ms)
+✔ S01 FR-01 FR-02 Overview opens on the latest month with the four headline figures (28.224125ms)
+✔ S02 FR-02 A past month: change against the month before and a full-month daily average (11.978375ms)
+✔ S03 FR-02 FR-05 A month without expenses shows zeros and an Add expense button (2.977709ms)
+✔ S04 FR-03 Spending by category: largest first, shares to one decimal (3.091667ms)
+✔ S05 FR-04 Running-total chart with round gridlines and per-day tooltips (2.559958ms)
+✔ S06 FR-05 Latest five expenses of the month, newest first (2.891708ms)
+✔ S07 FR-06 Expense list: count, total, rows newest first, text safely escaped (4.567375ms)
+✔ S08 FR-07 Filter by month and category, search text, bookmarkable URLs (7.069875ms)
+✔ S09 FR-08 Four sort orders with deterministic tie-breaks (4.727833ms)
+✔ S10 FR-09 FR-06 FR-08 Add an expense: 303 redirect, notice, trimmed text, new id (8.793625ms)
+✔ S11 FR-10 Validation: HTTP 422, exact messages, values kept, nothing saved (9.6765ms)
+✔ S12 FR-11 FR-10 Edit an expense: saved values in the form, same validation, 404 for bad ids (5.927333ms)
+✔ S13 FR-12 Delete with a confirmation page; entry numbers are never reused (5.735ms)
+✔ S14 FR-13 Monthly report: every category, change and share, total row (3.040167ms)
+✔ S15 FR-14 CSV exports: exact bytes, BOM, CRLF, file names (2.392458ms)
+✔ S16 FR-14 FR-09 CSV is safe: formula guard, quotes, commas and line breaks (3.501875ms)
+✔ S17 FR-15 Read-only JSON API with amounts as text and as integer baisa (2.098917ms)
+✔ S18 FR-16 Data tools: confirmation tick, delete all, restore sample data (7.521959ms)
+✔ S19 FR-17 Money rules: integer baisa, half-away-from-zero rounding, ISO dates (3.88625ms)
+✔ S20 FR-18 FR-01 Errors and redirects: 404, 405, strict paths (5.783875ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 198.710917

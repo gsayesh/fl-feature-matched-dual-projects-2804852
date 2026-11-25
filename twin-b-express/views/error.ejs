@@ -1,0 +1,9 @@
+<%- include('_top') -%>
+<%_ /* FR-18: 404, 405 and 500 pages */ _%>
+      <section class="error-page">
+        <p class="error-code"><%= code %></p>
+        <h1><%= title %></h1>
+        <p><%= message %></p>
+        <a class="btn btn-primary" href="/">Go to the overview</a>
+      </section>
+<%- include('_bottom') -%>

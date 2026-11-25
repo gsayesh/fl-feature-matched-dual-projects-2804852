@@ -1,0 +1,395 @@
+{
+  "product": "Expense Ledger",
+  "version": "1.0.0",
+  "summary": "A small household expense tracker. It is built twice, as Twin A (Python 3 + Flask) and Twin B (Node.js + Express), and both builds follow the requirements below to the letter.",
+  "requirements": [
+    {
+      "id": "FR-01",
+      "area": "Shell",
+      "title": "Shared layout and navigation",
+      "routes": [
+        "all screens"
+      ],
+      "behaviour": [
+        "Every screen has the same sidebar with five links: Overview, Expenses, Add expense, Reports and Data.",
+        "The link for the current screen is highlighted and carries aria-current=\"page\".",
+        "The browser tab title reads \"<Screen> · Expense Ledger\". The footer reads \"Expense Ledger 1.0.0 · Amounts in Omani rial (OMR)\"."
+      ]
+    },
+    {
+      "id": "FR-02",
+      "area": "Overview",
+      "title": "Monthly headline figures",
+      "routes": [
+        "GET /",
+        "GET /?month=YYYY-MM"
+      ],
+      "behaviour": [
+        "Shows four figures for the selected month: total spent, number of expenses, daily average and largest expense.",
+        "The total also shows the change against the previous month as a percentage. If the previous month has no spending, it says \"No spending in <Month>\".",
+        "Daily average = total ÷ days in the month. For the current month, total ÷ days elapsed so far.",
+        "With no month in the URL, the month of the most recent expense is shown, or the current month if there are no expenses. Previous/next links move one month."
+      ]
+    },
+    {
+      "id": "FR-03",
+      "area": "Overview",
+      "title": "Spending by category",
+      "routes": [
+        "GET /"
+      ],
+      "behaviour": [
+        "One row per category with spending in the month: name, bar, amount and share of the month (one decimal).",
+        "Rows are sorted by amount, highest first. Equal amounts keep the fixed category order.",
+        "A composition strip above the rows shows the same shares in the fixed category order."
+      ]
+    },
+    {
+      "id": "FR-04",
+      "area": "Overview",
+      "title": "Spending-through-the-month chart",
+      "routes": [
+        "GET /"
+      ],
+      "behaviour": [
+        "A step chart of the running total by day for the selected month, with the previous month drawn as a dashed reference line.",
+        "The y-axis uses round gridlines (1, 2 or 5 × 10ⁿ OMR, at most 5 lines).",
+        "Hovering a day shows its date, that day's spending and the running total (native SVG tooltip, no JavaScript)."
+      ]
+    },
+    {
+      "id": "FR-05",
+      "area": "Overview",
+      "title": "Latest expenses",
+      "routes": [
+        "GET /"
+      ],
+      "behaviour": [
+        "Lists the five most recent expenses of the month (newest date first, then newest entry), with a link to the full filtered list.",
+        "A month without expenses shows \"No expenses in <Month Year>.\" and an Add expense button."
+      ]
+    },
+    {
+      "id": "FR-06",
+      "area": "Expenses",
+      "title": "Expense list",
+      "routes": [
+        "GET /expenses"
+      ],
+      "behaviour": [
+        "A table with date, description (notes underneath), category, amount, and Edit / Delete actions.",
+        "Above the table: the number of rows shown and their total, e.g. \"36 expenses · OMR 1,540.800\", plus the active sort order.",
+        "After an add, edit or delete, a confirmation notice is shown (see Messages)."
+      ]
+    },
+    {
+      "id": "FR-07",
+      "area": "Expenses",
+      "title": "Filter and search",
+      "routes": [
+        "GET /expenses?month=&category=&q="
+      ],
+      "behaviour": [
+        "Filter by month (All months or one month that has data), by category (All categories or one), and by free text.",
+        "The text search ignores case and matches the description or the notes. All filters are combined (AND).",
+        "The filter state lives in the URL, so every filtered view can be bookmarked. Reset clears all filters.",
+        "With no matches: \"No expenses match these filters.\" With no data at all: \"No expenses yet.\""
+      ]
+    },
+    {
+      "id": "FR-08",
+      "area": "Expenses",
+      "title": "Sorting",
+      "routes": [
+        "GET /expenses?sort="
+      ],
+      "behaviour": [
+        "Sort options: Newest first (default), Oldest first, Amount: high to low, Amount: low to high.",
+        "Ties break by entry number: newest entry first for descending sorts, oldest first for ascending sorts."
+      ]
+    },
+    {
+      "id": "FR-09",
+      "area": "Add",
+      "title": "Add an expense",
+      "routes": [
+        "GET /expenses/new",
+        "POST /expenses"
+      ],
+      "behaviour": [
+        "Fields, in screen order: date (defaults to today), amount, description, category and optional notes.",
+        "A valid form is saved and the app goes to the list (HTTP 303) with the notice \"Expense added.\""
+      ]
+    },
+    {
+      "id": "FR-10",
+      "area": "Add / Edit",
+      "title": "Validation with exact messages",
+      "routes": [
+        "POST /expenses",
+        "POST /expenses/<id>"
+      ],
+      "behaviour": [
+        "Every field is checked on the server, rules in the order listed under Messages. Each field shows at most one message; the summary lists them in screen order.",
+        "An invalid form comes back with HTTP 422, the values entered, a summary box linking to each field, and the message under each field.",
+        "Amounts accept digits with up to three decimals; thousands commas are ignored. More than three decimals is rejected, never rounded."
+      ]
+    },
+    {
+      "id": "FR-11",
+      "area": "Edit",
+      "title": "Edit an expense",
+      "routes": [
+        "GET /expenses/<id>/edit",
+        "POST /expenses/<id>"
+      ],
+      "behaviour": [
+        "The form opens with the saved values, uses the same validation, and saves with the notice \"Expense updated.\"",
+        "An unknown or malformed id shows the 404 page."
+      ]
+    },
+    {
+      "id": "FR-12",
+      "area": "Delete",
+      "title": "Delete with confirmation",
+      "routes": [
+        "GET /expenses/<id>/delete",
+        "POST /expenses/<id>/delete"
+      ],
+      "behaviour": [
+        "A confirmation screen shows the expense and warns that this cannot be undone. Cancel returns to the list.",
+        "Confirming deletes the expense and returns to the list with the notice \"Expense deleted.\" Entry numbers are never reused."
+      ]
+    },
+    {
+      "id": "FR-13",
+      "area": "Reports",
+      "title": "Monthly report",
+      "routes": [
+        "GET /reports?month=YYYY-MM"
+      ],
+      "behaviour": [
+        "All eight categories with this month, previous month, change in OMR, change in % and share of the month, plus a Total row.",
+        "Change % shows \"—\" when the previous month is zero. Previous/next links move one month; the default month follows FR-02."
+      ]
+    },
+    {
+      "id": "FR-14",
+      "area": "Exports",
+      "title": "CSV export",
+      "routes": [
+        "GET /export/expenses.csv",
+        "GET /export/report.csv?month="
+      ],
+      "behaviour": [
+        "The list export uses the current filters and sort. The report export holds the monthly report.",
+        "Files are UTF-8 with a byte-order mark (Arabic text opens correctly in Excel) and CRLF line endings, and use RFC 4180 quoting.",
+        "Text cells that start with = + - @ get a leading apostrophe (formula-injection guard). Amounts are plain numbers with three decimals.",
+        "File names: expenses-all.csv or expenses-YYYY-MM.csv, and report-YYYY-MM.csv."
+      ]
+    },
+    {
+      "id": "FR-15",
+      "area": "API",
+      "title": "Read-only JSON API",
+      "routes": [
+        "GET /api/expenses",
+        "GET /api/summary?month="
+      ],
+      "behaviour": [
+        "/api/expenses takes the same filters and sort as the list. /api/summary returns the overview figures for a month.",
+        "Responses are compact UTF-8 JSON with stable key order, and give each amount as a string (\"18.450\") and as an integer in baisa."
+      ]
+    },
+    {
+      "id": "FR-16",
+      "area": "Data",
+      "title": "Data tools",
+      "routes": [
+        "GET /data",
+        "POST /data/reset",
+        "POST /data/clear"
+      ],
+      "behaviour": [
+        "Shows how many expenses are stored, the date range they cover and where the data file is.",
+        "Restore sample data and Delete all expenses each need a confirmation tick. Without it the page comes back with HTTP 422 and \"Tick the box to confirm.\""
+      ]
+    },
+    {
+      "id": "FR-17",
+      "area": "Rules",
+      "title": "Storage and money rules",
+      "routes": [
+        "data/ledger.json"
+      ],
+      "behaviour": [
+        "Data lives in one JSON file. On first run it is created from seed.json, and every save is atomic (temporary file, then rename).",
+        "Amounts are stored as whole baisa (1 OMR = 1000 baisa) and never as floating point. They display as OMR 1,234.500.",
+        "Averages and percentages round half away from zero, using integer arithmetic only.",
+        "Dates are ISO 8601 (YYYY-MM-DD) and show as \"24 Nov 2026\"."
+      ]
+    },
+    {
+      "id": "FR-18",
+      "area": "Errors",
+      "title": "Errors, status codes and redirects",
+      "routes": [
+        "any unknown URL"
+      ],
+      "behaviour": [
+        "Unknown pages return the 404 page. A wrong method on a known URL returns the 405 page. Routes are case-sensitive and have no trailing slash.",
+        "Every successful POST redirects with 303 See Other and an empty body, so a refresh never resubmits a form."
+      ]
+    }
+  ],
+  "messages": {
+    "validation": [
+      {
+        "field": "date",
+        "rule": "empty",
+        "text": "Enter the date of the expense."
+      },
+      {
+        "field": "date",
+        "rule": "not a real date in 2000–2099 (YYYY-MM-DD)",
+        "text": "Enter a real date in the format YYYY-MM-DD."
+      },
+      {
+        "field": "amount",
+        "rule": "empty",
+        "text": "Enter an amount."
+      },
+      {
+        "field": "amount",
+        "rule": "not a plain number",
+        "text": "Amount must be a number, like 12.500."
+      },
+      {
+        "field": "amount",
+        "rule": "more than 3 decimals",
+        "text": "Amount can have at most 3 decimal places."
+      },
+      {
+        "field": "amount",
+        "rule": "zero",
+        "text": "Amount must be more than 0.000."
+      },
+      {
+        "field": "amount",
+        "rule": "above 100,000.000",
+        "text": "Amount must be 100,000.000 or less."
+      },
+      {
+        "field": "description",
+        "rule": "empty",
+        "text": "Enter a description."
+      },
+      {
+        "field": "description",
+        "rule": "more than 80 characters",
+        "text": "Description must be 80 characters or fewer."
+      },
+      {
+        "field": "category",
+        "rule": "empty or unknown",
+        "text": "Choose a category."
+      },
+      {
+        "field": "notes",
+        "rule": "more than 200 characters",
+        "text": "Notes must be 200 characters or fewer."
+      },
+      {
+        "field": "form",
+        "rule": "any error (summary title)",
+        "text": "Check the highlighted fields and try again."
+      },
+      {
+        "field": "confirm",
+        "rule": "data tool without the tick",
+        "text": "Tick the box to confirm."
+      }
+    ],
+    "notices": [
+      {
+        "key": "added",
+        "text": "Expense added."
+      },
+      {
+        "key": "updated",
+        "text": "Expense updated."
+      },
+      {
+        "key": "deleted",
+        "text": "Expense deleted."
+      },
+      {
+        "key": "reset",
+        "text": "Sample data restored."
+      },
+      {
+        "key": "cleared",
+        "text": "All expenses deleted."
+      }
+    ]
+  },
+  "categories": [
+    {
+      "key": "housing",
+      "label": "Housing"
+    },
+    {
+      "key": "groceries",
+      "label": "Groceries"
+    },
+    {
+      "key": "dining",
+      "label": "Dining"
+    },
+    {
+      "key": "transport",
+      "label": "Transport"
+    },
+    {
+      "key": "utilities",
+      "label": "Utilities"
+    },
+    {
+      "key": "health",
+      "label": "Health"
+    },
+    {
+      "key": "leisure",
+      "label": "Leisure"
+    },
+    {
+      "key": "other",
+      "label": "Other"
+    }
+  ],
+  "stack": {
+    "twin_a": {
+      "name": "Twin A",
+      "folder": "twin-a-flask",
+      "language": "Python 3.10+",
+      "framework": "Flask 3",
+      "templates": "Jinja2",
+      "tests": "pytest + Flask test client",
+      "port": 5001,
+      "run": "python run.py",
+      "test": "python -m pytest -v"
+    },
+    "twin_b": {
+      "name": "Twin B",
+      "folder": "twin-b-express",
+      "language": "Node.js 18.17+",
+      "framework": "Express 5",
+      "templates": "EJS",
+      "tests": "node:test + built-in fetch",
+      "port": 5002,
+      "run": "npm start",
+      "test": "npm test"
+    },
+    "shared": "Only framework-neutral files are shared, as copies: the stylesheet and fonts, seed.json and scenarios.json (tools/sync_shared.py makes the copies)."
+  }
+}

@@ -1,0 +1,47 @@
+{% include "_top.html" %}
+{# FR-16: what is stored, plus restore and delete-all (each needs a confirmation tick) #}
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Data</p>
+          <h1>Data tools</h1>
+          <p class="lede">All expenses live in one JSON file. Both builds read and write exactly the same format.</p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn-ghost" href="{{ export_href }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5v7.5M4.8 7 8 10.2 11.2 7M3 13h10"/></svg>Export all as CSV</a>
+        </div>
+      </header>
+      <section class="stats" aria-label="Stored data">
+        <div class="card stat">
+          <p class="kpi-label">Stored</p>
+          <p class="kpi-value">{{ count_text }}</p>
+        </div>
+        <div class="card stat">
+          <p class="kpi-label">Date range</p>
+          <p class="kpi-value">{{ range_text }}</p>
+        </div>
+        <div class="card stat">
+          <p class="kpi-label">Data file</p>
+          <p class="kpi-value">{{ file_text }}</p>
+        </div>
+      </section>
+      <div class="tools">
+        <form class="card tool" method="post" action="/data/reset">
+          <h2>Restore sample data</h2>
+          <p>Replaces every expense with the 36 sample expenses from September to November 2026. Use it to start a walkthrough from a known state.</p>
+          <label class="tick"><input type="checkbox" name="confirm" value="yes"{% if reset_error %} aria-invalid="true" aria-describedby="reset-error"{% endif %}>I understand this replaces all current expenses.</label>
+          {% if reset_error %}
+          <p class="field-error" id="reset-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg>{{ reset_error }}</p>
+          {% endif %}
+          <button class="btn btn-primary" type="submit">Restore sample data</button>
+        </form>
+        <form class="card tool is-danger" method="post" action="/data/clear">
+          <h2>Delete all expenses</h2>
+          <p>Removes every expense. Entry numbers keep counting, so a deleted number is never handed out again.</p>
+          <label class="tick"><input type="checkbox" name="confirm" value="yes"{% if clear_error %} aria-invalid="true" aria-describedby="clear-error"{% endif %}>I understand this deletes every expense.</label>
+          {% if clear_error %}
+          <p class="field-error" id="clear-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg>{{ clear_error }}</p>
+          {% endif %}
+          <button class="btn btn-danger" type="submit">Delete all expenses</button>
+        </form>
+      </div>
+{% include "_bottom.html" %}

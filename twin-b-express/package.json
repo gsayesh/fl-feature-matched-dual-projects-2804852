@@ -1,0 +1,19 @@
+{
+  "name": "expense-ledger-twin-b",
+  "version": "1.0.0",
+  "description": "Expense Ledger, Twin B: Node.js + Express + EJS. Feature-matched twin of the Python/Flask build.",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test --test-reporter=spec test/rules.test.js test/scenarios.test.js"
+  },
+  "dependencies": {
+    "ejs": "^7.0.2",
+    "express": "^5.3.0"
+  },
+  "license": "MIT"
+}

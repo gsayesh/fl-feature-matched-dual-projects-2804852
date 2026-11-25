@@ -1,0 +1,123 @@
+{% include "_top.html" %}
+{# FR-02: headline figures for one month, with month navigation #}
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1>{{ month_label }}</h1>
+        </div>
+        <div class="head-actions">
+          <nav class="month-switch" aria-label="Month">
+            <a href="{{ prev_href }}" aria-label="Previous month: {{ prev_label }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg></a>
+            <span>{{ month_label }}</span>
+            <a href="{{ next_href }}" aria-label="Next month: {{ next_label }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></a>
+          </nav>
+          <a class="btn btn-primary" href="{{ add_href }}"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>Add expense</a>
+        </div>
+      </header>
+      <section class="kpis" aria-label="Headline figures">
+        <div class="card kpi kpi-total">
+          <p class="kpi-label">Total spent</p>
+          <p class="kpi-value"><small>OMR</small>{{ total }}</p>
+          <p class="kpi-sub"><span class="delta{{ delta_cls }}">{{ delta_text }}</span></p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Expenses</p>
+          <p class="kpi-value">{{ count }}</p>
+          <p class="kpi-sub">{{ count_sub }}</p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Daily average</p>
+          <p class="kpi-value"><small>OMR</small>{{ average }}</p>
+          <p class="kpi-sub">{{ average_sub }}</p>
+        </div>
+        <div class="card kpi">
+          <p class="kpi-label">Largest expense</p>
+          <p class="kpi-value"><small>OMR</small>{{ largest }}</p>
+          <p class="kpi-sub">{{ largest_sub }}</p>
+        </div>
+      </section>
+      <div class="grid-2">
+        {# FR-04: running total through the month, previous month dashed #}
+        <section class="card chart-card">
+          <div class="card-head">
+            <h2>Spending through the month</h2>
+            <div class="legend"><span><i></i>{{ chart.cur_label }}</span><span><i class="is-prev"></i>{{ chart.prev_label }}</span></div>
+          </div>
+          <div class="chart">
+            <div class="y-axis" aria-hidden="true">
+              {% for g in chart.grid %}
+              <span class="y-label" style="top: {{ g.top }}">{{ g.label }}</span>
+              {% endfor %}
+            </div>
+            <svg viewBox="0 0 {{ chart.w }} {{ chart.h }}" preserveAspectRatio="none" role="img" aria-label="{{ chart.aria }}">
+              <defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d6b53" stop-opacity="0.16"/><stop offset="1" stop-color="#0d6b53" stop-opacity="0"/></linearGradient></defs>
+              {% for g in chart.grid %}
+              <line class="grid-line" x1="0" y1="{{ g.y }}" x2="{{ chart.w }}" y2="{{ g.y }}"/>
+              {% endfor %}
+              <line class="base-line" x1="0" y1="{{ chart.h }}" x2="{{ chart.w }}" y2="{{ chart.h }}"/>
+              <path class="prev" d="{{ chart.prev }}"/>
+              <path class="area" d="{{ chart.area }}"/>
+              <path class="line" d="{{ chart.line }}"/>
+              {% for h in chart.hits %}
+              <rect class="hit" x="{{ h.x }}" y="0" width="{{ h.w }}" height="{{ chart.h }}"><title>{{ h.title }}</title></rect>
+              {% endfor %}
+            </svg>
+            {% for t in chart.ticks %}
+            <span class="x-label" style="left: {{ t.left }}">{{ t.label }}</span>
+            {% endfor %}
+          </div>
+        </section>
+        {# FR-03: spending by category, largest first #}
+        <section class="card card-pad">
+          <div class="card-head">
+            <h2>By category</h2>
+            <p>Share of {{ month_name }}</p>
+          </div>
+          {% if cats %}
+          <div class="cat-strip" aria-hidden="true">
+            {% for s in strip %}
+            <span class="cat-{{ s.key }}" style="flex-grow: {{ s.grow }}" title="{{ s.title }}"></span>
+            {% endfor %}
+          </div>
+          <ul class="cat-list">
+            {% for c in cats %}
+            <li class="cat-row cat-{{ c.key }}">
+              <span class="cat-name"><i class="dot"></i>{{ c.label }}</span>
+              <span class="cat-bar"><span class="cat-{{ c.key }}" style="width: {{ c.share }}"></span></span>
+              <span class="cat-amt">{{ c.amount }}</span>
+              <span class="cat-share">{{ c.share }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="muted-note">No spending in {{ month_label }}.</p>
+          {% endif %}
+        </section>
+      </div>
+      {# FR-05: the five most recent expenses of the month #}
+      <section class="card card-pad">
+        <div class="card-head">
+          <h2>Latest expenses</h2>
+          {% if has_data %}
+          <a href="{{ latest_href }}">View all in {{ month_name }}</a>
+          {% endif %}
+        </div>
+        {% if has_data %}
+        <ul class="latest">
+          {% for r in latest %}
+          <li>
+            <span class="when">{{ r.date }}</span>
+            <span class="what"><strong>{{ r.description }}</strong><span class="cat-{{ r.key }}"><i class="dot"></i>{{ r.label }}</span></span>
+            <span class="amt">{{ r.amount }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty empty-inline">
+          <h2>No expenses in {{ month_label }}.</h2>
+          <p>Add the first expense of the month and it will show up here.</p>
+          <a class="btn btn-primary" href="{{ add_href }}">Add expense</a>
+        </div>
+        {% endif %}
+      </section>
+{% include "_bottom.html" %}

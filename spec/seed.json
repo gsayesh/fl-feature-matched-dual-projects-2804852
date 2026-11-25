@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "next_id": 37,
+  "expenses": [
+    {
+      "id": 1,
+      "date": "2026-09-01",
+      "description": "Monthly rent",
+      "category": "housing",
+      "amount": 280000,
+      "notes": "Flat 12, Al Khuwair"
+    },
+    {
+      "id": 2,
+      "date": "2026-09-02",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 42350,
+      "notes": ""
+    },
+    {
+      "id": 3,
+      "date": "2026-09-04",
+      "description": "Fuel",
+      "category": "transport",
+      "amount": 11200,
+      "notes": ""
+    },
+    {
+      "id": 4,
+      "date": "2026-09-06",
+      "description": "Electricity bill",
+      "category": "utilities",
+      "amount": 18750,
+      "notes": "August usage"
+    },
+    {
+      "id": 5,
+      "date": "2026-09-08",
+      "description": "Pharmacy",
+      "category": "health",
+      "amount": 6450,
+      "notes": ""
+    },
+    {
+      "id": 6,
+      "date": "2026-09-09",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 38900,
+      "notes": ""
+    },
+    {
+      "id": 7,
+      "date": "2026-09-12",
+      "description": "Seafood dinner, Qurum beach",
+      "category": "dining",
+      "amount": 24500,
+      "notes": ""
+    },
+    {
+      "id": 8,
+      "date": "2026-09-15",
+      "description": "Home internet (fibre)",
+      "category": "utilities",
+      "amount": 25000,
+      "notes": ""
+    },
+    {
+      "id": 9,
+      "date": "2026-09-17",
+      "description": "Cinema tickets",
+      "category": "leisure",
+      "amount": 7000,
+      "notes": ""
+    },
+    {
+      "id": 10,
+      "date": "2026-09-19",
+      "description": "Fuel",
+      "category": "transport",
+      "amount": 10850,
+      "notes": ""
+    },
+    {
+      "id": 11,
+      "date": "2026-09-23",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 45100,
+      "notes": ""
+    },
+    {
+      "id": 12,
+      "date": "2026-09-27",
+      "description": "Karak tea & snacks",
+      "category": "dining",
+      "amount": 2300,
+      "notes": ""
+    },
+    {
+      "id": 13,
+      "date": "2026-10-01",
+      "description": "Monthly rent",
+      "category": "housing",
+      "amount": 280000,
+      "notes": "Flat 12, Al Khuwair"
+    },
+    {
+      "id": 14,
+      "date": "2026-10-03",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 40250,
+      "notes": ""
+    },
+    {
+      "id": 15,
+      "date": "2026-10-05",
+      "description": "Fuel",
+      "category": "transport",
+      "amount": 11600,
+      "notes": ""
+    },
+    {
+      "id": 16,
+      "date": "2026-10-06",
+      "description": "Electricity bill",
+      "category": "utilities",
+      "amount": 16400,
+      "notes": "September usage"
+    },
+    {
+      "id": 17,
+      "date": "2026-10-10",
+      "description": "Gym membership",
+      "category": "leisure",
+      "amount": 20000,
+      "notes": "Quarterly plan"
+    },
+    {
+      "id": 18,
+      "date": "2026-10-11",
+      "description": "Dental check-up",
+      "category": "health",
+      "amount": 35000,
+      "notes": ""
+    },
+    {
+      "id": 19,
+      "date": "2026-10-14",
+      "description": "Family dinner",
+      "category": "dining",
+      "amount": 31750,
+      "notes": ""
+    },
+    {
+      "id": 20,
+      "date": "2026-10-15",
+      "description": "Home internet (fibre)",
+      "category": "utilities",
+      "amount": 25000,
+      "notes": ""
+    },
+    {
+      "id": 21,
+      "date": "2026-10-18",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 47900,
+      "notes": ""
+    },
+    {
+      "id": 22,
+      "date": "2026-10-21",
+      "description": "Taxi to the airport",
+      "category": "transport",
+      "amount": 9000,
+      "notes": ""
+    },
+    {
+      "id": 23,
+      "date": "2026-10-25",
+      "description": "School supplies",
+      "category": "other",
+      "amount": 14650,
+      "notes": ""
+    },
+    {
+      "id": 24,
+      "date": "2026-11-01",
+      "description": "Monthly rent",
+      "category": "housing",
+      "amount": 280000,
+      "notes": "Flat 12, Al Khuwair"
+    },
+    {
+      "id": 25,
+      "date": "2026-11-02",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 44800,
+      "notes": ""
+    },
+    {
+      "id": 26,
+      "date": "2026-11-04",
+      "description": "Fuel",
+      "category": "transport",
+      "amount": 12100,
+      "notes": ""
+    },
+    {
+      "id": 27,
+      "date": "2026-11-06",
+      "description": "Electricity bill",
+      "category": "utilities",
+      "amount": 14250,
+      "notes": "فاتورة شهر أكتوبر"
+    },
+    {
+      "id": 28,
+      "date": "2026-11-08",
+      "description": "Fresh dates & coffee beans",
+      "category": "groceries",
+      "amount": 9750,
+      "notes": ""
+    },
+    {
+      "id": 29,
+      "date": "2026-11-10",
+      "description": "Home internet (fibre)",
+      "category": "utilities",
+      "amount": 25000,
+      "notes": ""
+    },
+    {
+      "id": 30,
+      "date": "2026-11-12",
+      "description": "Birthday gift",
+      "category": "other",
+      "amount": 18500,
+      "notes": "Card reads \"Happy 30th!\""
+    },
+    {
+      "id": 31,
+      "date": "2026-11-14",
+      "description": "Pharmacy",
+      "category": "health",
+      "amount": 8350,
+      "notes": ""
+    },
+    {
+      "id": 32,
+      "date": "2026-11-16",
+      "description": "Coffee with colleagues",
+      "category": "dining",
+      "amount": 4800,
+      "notes": ""
+    },
+    {
+      "id": 33,
+      "date": "2026-11-18",
+      "description": "Fuel",
+      "category": "transport",
+      "amount": 11900,
+      "notes": ""
+    },
+    {
+      "id": 34,
+      "date": "2026-11-20",
+      "description": "Weekly groceries",
+      "category": "groceries",
+      "amount": 51200,
+      "notes": ""
+    },
+    {
+      "id": 35,
+      "date": "2026-11-22",
+      "description": "Football match tickets",
+      "category": "leisure",
+      "amount": 10000,
+      "notes": ""
+    },
+    {
+      "id": 36,
+      "date": "2026-11-24",
+      "description": "Water bill",
+      "category": "utilities",
+      "amount": 6200,
+      "notes": ""
+    }
+  ]
+}

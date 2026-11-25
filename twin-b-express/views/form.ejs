@@ -1,0 +1,69 @@
+<%- include('_top') -%>
+<%_ /* FR-09 (add) and FR-11 (edit): one form, validated on the server (FR-10) */ _%>
+      <header class="page-head">
+        <div>
+          <p class="eyebrow"><%= eyebrow %></p>
+          <h1><%= heading %></h1>
+          <p class="lede"><%= lede %></p>
+        </div>
+      </header>
+      <%_ if (has_errors) { _%>
+      <div class="error-summary" role="alert" tabindex="-1">
+        <h2><%= summary_title %></h2>
+        <ul>
+          <%_ for (const item of error_list) { _%>
+          <li><a href="#f-<%= item.field %>"><%= item.message %></a></li>
+          <%_ } _%>
+        </ul>
+      </div>
+      <%_ } _%>
+      <form class="card form-card" method="post" action="<%= action %>" novalidate>
+        <div class="form-grid">
+          <div class="field<%= err_cls.date %>">
+            <label for="f-date">Date <span class="hint">YYYY-MM-DD</span></label>
+            <input class="input num" id="f-date" name="date" type="text" inputmode="numeric" autocomplete="off" placeholder="YYYY-MM-DD" value="<%= v.date %>"<% if (e.date) { %> aria-invalid="true" aria-describedby="f-date-error"<% } %>>
+            <%_ if (e.date) { _%>
+            <p class="field-error" id="f-date-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg><%= e.date %></p>
+            <%_ } _%>
+          </div>
+          <div class="field<%= err_cls.amount %>">
+            <label for="f-amount">Amount <span class="hint">Up to 3 decimals</span></label>
+            <div class="amount-wrap"><span>OMR</span><input class="input num" id="f-amount" name="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.000" value="<%= v.amount %>"<% if (e.amount) { %> aria-invalid="true" aria-describedby="f-amount-error"<% } %>></div>
+            <%_ if (e.amount) { _%>
+            <p class="field-error" id="f-amount-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg><%= e.amount %></p>
+            <%_ } _%>
+          </div>
+          <div class="field<%= err_cls.description %>">
+            <label for="f-description">Description <span class="hint">Up to 80 characters</span></label>
+            <input class="input" id="f-description" name="description" type="text" autocomplete="off" placeholder="e.g. Weekly groceries" value="<%= v.description %>"<% if (e.description) { %> aria-invalid="true" aria-describedby="f-description-error"<% } %>>
+            <%_ if (e.description) { _%>
+            <p class="field-error" id="f-description-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg><%= e.description %></p>
+            <%_ } _%>
+          </div>
+          <div class="field<%= err_cls.category %>">
+            <label for="f-category">Category</label>
+            <select class="select" id="f-category" name="category"<% if (e.category) { %> aria-invalid="true" aria-describedby="f-category-error"<% } %>>
+              <%_ for (const o of category_options) { _%>
+              <option value="<%= o.value %>"<%= o.sel %>><%= o.label %></option>
+              <%_ } _%>
+            </select>
+            <%_ if (e.category) { _%>
+            <p class="field-error" id="f-category-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg><%= e.category %></p>
+            <%_ } _%>
+          </div>
+          <div class="field span-2<%= err_cls.notes %>">
+            <label for="f-notes">Notes <span class="hint">Optional · up to 200 characters</span></label>
+            <textarea class="textarea" id="f-notes" name="notes" rows="3"<% if (e.notes) { %> aria-invalid="true" aria-describedby="f-notes-error"<% } %>><%= v.notes %></textarea>
+            <%_ if (e.notes) { _%>
+            <p class="field-error" id="f-notes-error"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.8v3.6M8 11h.01"/></svg><%= e.notes %></p>
+            <%_ } _%>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit"><%= submit_label %></button>
+          <a class="btn btn-ghost" href="<%= cancel_href %>">Cancel</a>
+          <span class="spacer"></span>
+          <p>Every field is checked on the server before anything is saved.</p>
+        </div>
+      </form>
+<%- include('_bottom') -%>

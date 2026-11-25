@@ -1,0 +1,51 @@
+$ python -m pytest -v
+============================= test session starts ==============================
+platform darwin -- Python 3.13.3, pytest-8.4.2, pluggy-1.7.0
+rootdir: ./twin-a-flask
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 41 items
+
+tests/test_rules.py::test_fr17_div_round_rounds_half_away_from_zero PASSED [  2%]
+tests/test_rules.py::test_fr17_amounts_format_with_three_decimals PASSED [  4%]
+tests/test_rules.py::test_fr17_dates_use_iso_and_short_month_names PASSED [  7%]
+tests/test_rules.py::test_fr17_leap_years_and_month_lengths PASSED       [  9%]
+tests/test_rules.py::test_fr17_shift_month_wraps_years PASSED            [ 12%]
+tests/test_rules.py::test_fr10_amount_parsing_accepts_plain_numbers PASSED [ 14%]
+tests/test_rules.py::test_fr10_amount_parsing_rejects_bad_input_in_rule_order PASSED [ 17%]
+tests/test_rules.py::test_fr10_text_limits_count_characters_not_bytes PASSED [ 19%]
+tests/test_rules.py::test_fr10_validation_trims_ascii_whitespace_only PASSED [ 21%]
+tests/test_rules.py::test_fr07_search_ignores_case_and_matches_notes PASSED [ 24%]
+tests/test_rules.py::test_fr07_query_strings_are_encoded_the_same_way PASSED [ 26%]
+tests/test_rules.py::test_fr08_sort_ties_break_on_entry_number PASSED    [ 29%]
+tests/test_rules.py::test_fr02_month_summary_matches_hand_calculation PASSED [ 31%]
+tests/test_rules.py::test_fr04_axis_steps_are_1_2_or_5_times_a_power_of_ten PASSED [ 34%]
+tests/test_rules.py::test_fr13_report_change_is_empty_without_previous_spending PASSED [ 36%]
+tests/test_rules.py::test_fr14_csv_cells_guard_formulas_and_quote_specials PASSED [ 39%]
+tests/test_rules.py::test_fr15_json_is_compact_with_stable_key_order PASSED [ 41%]
+tests/test_rules.py::test_fr17_store_creates_file_from_seed_and_never_reuses_ids PASSED [ 43%]
+tests/test_rules.py::test_fr17_store_file_format_is_stable PASSED        [ 46%]
+tests/test_rules.py::test_fr01_every_screen_shares_the_shell PASSED      [ 48%]
+tests/test_rules.py::test_fr18_unknown_method_returns_405_page PASSED    [ 51%]
+tests/test_scenarios.py::test_scenario[S01_fr01_fr02] PASSED             [ 53%]
+tests/test_scenarios.py::test_scenario[S02_fr02] PASSED                  [ 56%]
+tests/test_scenarios.py::test_scenario[S03_fr02_fr05] PASSED             [ 58%]
+tests/test_scenarios.py::test_scenario[S04_fr03] PASSED                  [ 60%]
+tests/test_scenarios.py::test_scenario[S05_fr04] PASSED                  [ 63%]
+tests/test_scenarios.py::test_scenario[S06_fr05] PASSED                  [ 65%]
+tests/test_scenarios.py::test_scenario[S07_fr06] PASSED                  [ 68%]
+tests/test_scenarios.py::test_scenario[S08_fr07] PASSED                  [ 70%]
+tests/test_scenarios.py::test_scenario[S09_fr08] PASSED                  [ 73%]
+tests/test_scenarios.py::test_scenario[S10_fr09_fr06_fr08] PASSED        [ 75%]
+tests/test_scenarios.py::test_scenario[S11_fr10] PASSED                  [ 78%]
+tests/test_scenarios.py::test_scenario[S12_fr11_fr10] PASSED             [ 80%]
+tests/test_scenarios.py::test_scenario[S13_fr12] PASSED                  [ 82%]
+tests/test_scenarios.py::test_scenario[S14_fr13] PASSED                  [ 85%]
+tests/test_scenarios.py::test_scenario[S15_fr14] PASSED                  [ 87%]
+tests/test_scenarios.py::test_scenario[S16_fr14_fr09] PASSED             [ 90%]
+tests/test_scenarios.py::test_scenario[S17_fr15] PASSED                  [ 92%]
+tests/test_scenarios.py::test_scenario[S18_fr16] PASSED                  [ 95%]
+tests/test_scenarios.py::test_scenario[S19_fr17] PASSED                  [ 97%]
+tests/test_scenarios.py::test_scenario[S20_fr18_fr01] PASSED             [100%]
+
+============================== 41 passed in 0.18s ==============================
